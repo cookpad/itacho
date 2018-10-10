@@ -1,0 +1,98 @@
+admin:
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 9901
+  access_log_path: "/dev/stdout"
+static_resources:
+  listeners:
+  - address:
+      socket_address:
+        address: 0.0.0.0
+        port_value: 9211
+    name: egress
+    filter_chains:
+    - filters:
+      - name: envoy.http_connection_manager
+        config:
+          codec_type: AUTO
+          stat_prefix: egress_http
+          access_log:
+          - name: envoy.file_access_log
+            config:
+              path: "/dev/stdout"
+          rds:
+            config_source:
+              api_config_source:
+                api_type: REST
+                cluster_names:
+                - itacho
+                refresh_delay:
+                  seconds: 10
+            route_config_name: default
+          http_filters:
+          - name: envoy.router
+  clusters:
+  - name: nginx
+    type: STRICT_DNS
+    hosts:
+    - socket_address:
+        address: nginx
+        port_value: 80
+    lb_policy: ROUND_ROBIN
+    connect_timeout:
+      seconds: 0
+      nanos: 100000000
+    dns_lookup_family: V4_ONLY
+  - name: itacho
+    type: STRICT_DNS
+    hosts:
+    - socket_address:
+        address: itacho
+        port_value: 8080
+    lb_policy: ROUND_ROBIN
+    connect_timeout:
+      seconds: 0
+      nanos: 100000000
+    dns_lookup_family: V4_ONLY
+  - name: sds
+    type: STRICT_DNS
+    hosts:
+    - socket_address:
+        address: sds
+        port_value: 8080
+    lb_policy: ROUND_ROBIN
+    connect_timeout:
+      seconds: 1
+      nanos: 500000000
+    dns_lookup_family: V4_ONLY
+dynamic_resources:
+  cds_config:
+    api_config_source:
+      api_type: REST
+      cluster_names:
+      - itacho
+      refresh_delay:
+        seconds: 10
+  deprecated_v1:
+    sds_config:
+      api_config_source:
+        cluster_names:
+        - sds
+        refresh_delay:
+          seconds: 5
+stats_sinks:
+- name: envoy.dog_statsd
+  config:
+    address:
+      socket_address:
+        protocol: UDP
+        address: statsd-exporter
+        port_value: 9125
+stats_config:
+  use_all_default_tags: true
+  stats_tags:
+  - tag_name: service-cluster
+    fixed_value: test-cluster
+  - tag_name: service-node
+    fixed_value: test-node

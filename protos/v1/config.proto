@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package itacho.api.v1.config;
+option go_package = "api/v1/config";
+
+import "google/protobuf/wrappers.proto";
+import "validate/validate.proto";
+
+message ServiceDefinition {
+  uint64 version = 1 [(validate.rules).uint64.const = 1];
+  repeated itacho.api.v1.config.Dependency dependencies = 2 [(validate.rules).repeated.min_items = 1];
+}
+
+message Dependency {
+  string name = 1 [(validate.rules).string.min_len = 1];
+  string cluster_name = 2 [(validate.rules).string.min_len = 1];
+
+  oneof discovery_option {
+    option (validate.required) = true;
+
+    string lb = 3;
+    google.protobuf.BoolValue sds = 4;
+  }
+
+  string host_header = 5; // nullable
+
+  google.protobuf.BoolValue tls = 6; // default to false
+  uint64 connect_timeout_ms = 7  [(validate.rules).uint64.gt = 0];
+
+  itacho.api.v1.config.CircuitBreaker circuit_breaker = 8 [(validate.rules).message.required = true];
+  repeated itacho.api.v1.config.Route routes = 9 [(validate.rules).repeated.min_items = 1];
+  itacho.api.v1.config.OutlierDetection outlier_detection = 10; // nullable
+
+  // Not used in itacho
+  string health_check_path = 11; // nullable
+}
+
+message CircuitBreaker {
+  uint32 max_connections = 1 [(validate.rules).uint32.gt = 0];
+  uint32 max_pending_requests = 2 [(validate.rules).uint32.gt = 0];
+  uint32 max_retries = 3[(validate.rules).uint32.gt = 0];
+}
+
+message Route {
+  oneof path_specifier {
+    option (validate.required) = true;
+
+    string prefix = 1;
+    string path = 2;
+    // reserved 3;
+  }
+  string method = 4; //nullable
+  uint64 timeout_ms = 5 [(validate.rules).uint64.gt = 0];
+  itacho.api.v1.config.RetryPolicy retry_policy = 6 [(validate.rules).message.required = true];
+}
+
+message RetryPolicy {
+  // ["5xx", "gateway-error", "connect-failure", "retriable-4xx", "refused-stream", "retriable-status-codes"]
+  string retry_on = 1 [(validate.rules).string.min_len = 1];
+  uint32 num_retries = 2 [(validate.rules).uint32.gt = 0];
+  uint32 per_try_timeout_ms = 3 [(validate.rules).uint32.gt = 0];
+}
+
+message OutlierDetection {
+  // nullable fields
+  uint32 consecutive_5xx = 1;
+}
