@@ -30,10 +30,17 @@ func Start(opts Opts) error {
 	str := storage.NewXdsResponseStorage(*endpointURL)
 
 	h := http.NewServeMux()
+	h.Handle("/hc", handlers.CombinedLoggingHandler(os.Stderr, &healthcheckHandler{}))
 	h.Handle("/", handlers.CombinedLoggingHandler(os.Stderr, NewXdsHandler(str)))
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%d", addr, port), h); err != nil {
 		return fmt.Errorf("Failed to start server: %s", err)
 	}
 
 	return nil
+}
+
+type healthcheckHandler struct {
+}
+
+func (h *healthcheckHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
