@@ -108,7 +108,7 @@ func convertToNonEdsCluster(dep *config.Dependency) (*api.Cluster, error) {
 
 	c := api.Cluster{
 		Name:              dep.GetClusterName(),
-		Type:              api.Cluster_LOGICAL_DNS,
+		Type:              api.Cluster_STRICT_DNS,
 		ConnectTimeout:    time.Duration(dep.GetConnectTimeoutMs()*1000*1000) * time.Nanosecond,
 		LbPolicy:          api.Cluster_ROUND_ROBIN,
 		ProtocolSelection: api.Cluster_USE_DOWNSTREAM_PROTOCOL,
