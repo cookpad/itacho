@@ -8,7 +8,7 @@ RUN go mod download
 COPY . /app/
 RUN go mod verify && make
 
-FROM gcr.io/distroless/base
+FROM ubuntu:18.04
 
 COPY --from=build /app/itacho /usr/local/bin/itacho
 CMD ["/usr/local/bin/itacho", "server"]
