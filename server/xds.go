@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"path"
@@ -62,7 +63,7 @@ func (h *xdsHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	jsonStr, err := h.storage.Fetch(t, nodeCluster)
 	if err != nil {
-		http.Error(w, "Failed to get content from object storage", http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Failed to get content from object storage: %s", err), http.StatusInternalServerError)
 		return
 	}
 
