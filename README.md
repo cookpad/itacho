@@ -1,7 +1,7 @@
 itacho
 ======
 
-itacho _板長_ to manage and operate envoy based service mesh.
+itacho _板長_ to manage and operate envoy based service mesh. It is based on Envoy's [go-control-plane](https://github.com/envoyproxy/go-control-plane).
 
 ## Configuration
 

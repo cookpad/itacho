@@ -32,6 +32,7 @@ func Start(opts Opts) error {
 	h := http.NewServeMux()
 	h.Handle("/hc", handlers.CombinedLoggingHandler(os.Stderr, &healthcheckHandler{}))
 	h.Handle("/", handlers.CombinedLoggingHandler(os.Stderr, NewXdsHandler(str)))
+	// XXX: read, write timeouts
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%d", addr, port), h); err != nil {
 		return fmt.Errorf("Failed to start server: %s", err)
 	}

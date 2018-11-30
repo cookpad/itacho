@@ -38,6 +38,7 @@ func (s *objectStorageGateway) Fetch(t xds.ResponseType, nodeCluster string) ([]
 	}
 
 	resp, err := http.Get(u.String())
+	// TODO: retry
 	if err != nil {
 		return []byte{}, err
 	}
