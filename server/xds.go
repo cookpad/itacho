@@ -61,13 +61,14 @@ func (h *xdsHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	nodeCluster := xds.ExtractNodeCluster(xdsReq.GetNode())
 	log.Infof("nodeCluster=%s", nodeCluster)
 
-	jsonStr, err := h.storage.Fetch(t, nodeCluster)
+	code, jsonStr, err := h.storage.Fetch(t, nodeCluster)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Failed to get content from object storage: %s", err), http.StatusInternalServerError)
 		return
 	}
 
-	if _, err = w.Write(jsonStr); err != nil {
+	w.WriteHeader(*code)
+	if _, err = w.Write(*jsonStr); err != nil {
 		log.Errorf("gateway error: %v", err)
 	}
 	return

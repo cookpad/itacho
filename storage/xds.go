@@ -10,7 +10,7 @@ import (
 
 // XdsResponseStorage is a gateway client for object storage.
 type XdsResponseStorage interface {
-	Fetch(t xds.ResponseType, nodeCluster string) ([]byte, error)
+	Fetch(t xds.ResponseType, nodeCluster string) (*int, *[]byte, error)
 }
 
 // NewXdsResponseStorage returns configured XdsResponseStorage.
@@ -23,7 +23,7 @@ type objectStorageGateway struct {
 }
 
 // Fetch xDS response JSON from object storage.
-func (s *objectStorageGateway) Fetch(t xds.ResponseType, nodeCluster string) ([]byte, error) {
+func (s *objectStorageGateway) Fetch(t xds.ResponseType, nodeCluster string) (*int, *[]byte, error) {
 	u := s.endpoint
 
 	switch t {
@@ -38,12 +38,15 @@ func (s *objectStorageGateway) Fetch(t xds.ResponseType, nodeCluster string) ([]
 	}
 
 	resp, err := http.Get(u.String())
-	// TODO: retry
 	if err != nil {
-		return []byte{}, err
+		return nil, nil, err
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	return body, nil
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return &resp.StatusCode, &body, nil
 }
