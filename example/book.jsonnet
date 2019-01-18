@@ -12,7 +12,13 @@ local routes = import 'routes.libsonnet';
       tls: false,
       connect_timeout_ms: 250,
       circuit_breaker: circuit_breaker,
-      routes: [routes.root],
+      routes: [
+        {
+          path: '/ping',
+          timeout_ms: 100,
+        },
+        routes.root,
+      ],
     },
     {
       name: 'ab-testing',

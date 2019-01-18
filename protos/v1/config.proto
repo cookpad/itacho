@@ -27,7 +27,7 @@ message Dependency {
   google.protobuf.BoolValue tls = 6; // default to false
   uint64 connect_timeout_ms = 7  [(validate.rules).uint64.gt = 0];
 
-  itacho.api.v1.config.CircuitBreaker circuit_breaker = 8 [(validate.rules).message.required = true];
+  itacho.api.v1.config.CircuitBreaker circuit_breaker = 8;
   repeated itacho.api.v1.config.Route routes = 9 [(validate.rules).repeated.min_items = 1];
   itacho.api.v1.config.OutlierDetection outlier_detection = 10; // nullable
 
@@ -51,7 +51,7 @@ message Route {
   }
   string method = 4; //nullable
   uint64 timeout_ms = 5 [(validate.rules).uint64.gt = 0];
-  itacho.api.v1.config.RetryPolicy retry_policy = 6 [(validate.rules).message.required = true];
+  itacho.api.v1.config.RetryPolicy retry_policy = 6;
 }
 
 message RetryPolicy {
