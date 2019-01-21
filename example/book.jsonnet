@@ -44,5 +44,24 @@ local routes = import 'routes.libsonnet';
         routes.root,
       ],
     },
+    {
+      name: 'fault-user',
+      cluster_name: 'fault-user-development',
+      lb: 'fault-user-app:8082',
+      host_header: 'fault-user-service',
+      tls: false,
+      connect_timeout_ms: 250,
+      circuit_breaker: circuit_breaker,
+      routes: [routes.root],
+      fault_filter_config: {
+        abort: {
+          http_status: 503,
+          percentage: {
+            numerator: 100,
+            denominator: 'HUNDRED',
+          },
+        },
+      },
+    },
   ],
 }

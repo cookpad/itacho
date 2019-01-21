@@ -31,6 +31,18 @@ services:
       #ERROR_RATE: 5
     expose:
       - '8080'
+  fault-user-app:
+    build: 'app'
+    expose:
+      - '8080'
+    environment:
+      RESPONSE: 'fault-user'
+      SLEEP: 0
+      #ERROR_RATE: 5
+    expose:
+      - '8080'
+    ports:
+      - '3082:8080'
   nginx:
     image: 'nginx'
     volumes:
