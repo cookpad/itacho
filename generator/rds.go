@@ -61,7 +61,7 @@ func convertToRoutes(dep *config.Dependency, r *config.Route) ([]*route.Route, e
 	var rs []*route.Route
 
 	if r.GetRetryPolicy() == nil {
-		if r.GetMethod() == "" {
+		if r.GetMethod() != "" {
 			match.Headers = []*route.HeaderMatcher{
 				&route.HeaderMatcher{
 					Name: ":method",

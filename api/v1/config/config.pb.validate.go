@@ -169,13 +169,6 @@ func (m *Dependency) Validate() error {
 		}
 	}
 
-	if m.GetCircuitBreaker() == nil {
-		return DependencyValidationError{
-			field:  "CircuitBreaker",
-			reason: "value is required",
-		}
-	}
-
 	if v, ok := interface{}(m.GetCircuitBreaker()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return DependencyValidationError{
@@ -401,13 +394,6 @@ func (m *Route) Validate() error {
 		return RouteValidationError{
 			field:  "TimeoutMs",
 			reason: "value must be greater than 0",
-		}
-	}
-
-	if m.GetRetryPolicy() == nil {
-		return RouteValidationError{
-			field:  "RetryPolicy",
-			reason: "value is required",
 		}
 	}
 
