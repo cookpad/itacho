@@ -47,7 +47,7 @@ local routes = import 'routes.libsonnet';
     {
       name: 'fault-user',
       cluster_name: 'fault-user-development',
-      lb: 'fault-user-app:8082',
+      lb: 'user-app:8080',
       host_header: 'fault-user-service',
       tls: false,
       connect_timeout_ms: 250,
