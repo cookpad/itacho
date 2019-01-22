@@ -42,18 +42,19 @@ func convertToVirtualHost(dep *config.Dependency) (*route.VirtualHost, error) {
 		}
 	}
 
-	perFilterConfig := make(map[string]*types.Struct)
-	faultFilterConfig := convertFaultFilterConfig(dep)
-	if faultFilterConfig != nil {
-		perFilterConfig["envoy.fault"] = faultFilterConfig
+	virtualHost := &route.VirtualHost{
+		Name:    dep.GetName(),
+		Domains: []string{dep.GetName()},
+		Routes:  routes,
 	}
 
-	return &route.VirtualHost{
-		Name:            dep.GetName(),
-		Domains:         []string{dep.GetName()},
-		Routes:          routes,
-		PerFilterConfig: perFilterConfig,
-	}, nil
+	if dep.GetFaultFilterConfig() != nil {
+		virtualHost.PerFilterConfig = map[string]*types.Struct{
+			"envoy.fault": buildFaultFilterConfig(dep.GetFaultFilterConfig()),
+		}
+	}
+
+	return virtualHost, nil
 }
 
 func convertToRoutes(dep *config.Dependency, r *config.Route) ([]*route.Route, error) {
@@ -112,50 +113,52 @@ func convertToRoutes(dep *config.Dependency, r *config.Route) ([]*route.Route, e
 	return rs, nil
 }
 
-func convertFaultFilterConfig(dep *config.Dependency) *types.Struct {
-	abort := dep.GetFaultFilterConfig().GetAbort()
-	delay := dep.GetFaultFilterConfig().GetDelay()
-
-	if abort == nil && delay == nil {
-		return nil
-	}
-
+func buildFaultFilterConfig(faultFilterConfig *config.FaultFilterConfig) *types.Struct {
 	faultConfig := &types.Struct{
 		Fields: map[string]*types.Value{},
 	}
 
-	if abort != nil {
-		abortConfig := &types.Value{Kind: &types.Value_StructValue{StructValue: &types.Struct{
-			Fields: map[string]*types.Value{
-				"http_status": &types.Value{Kind: &types.Value_NumberValue{NumberValue: float64(abort.GetHttpStatus())}},
-				"percentage": &types.Value{Kind: &types.Value_StructValue{StructValue: &types.Struct{
-					Fields: map[string]*types.Value{
-						"numerator":   &types.Value{Kind: &types.Value_NumberValue{NumberValue: float64(abort.GetPercentage().GetNumerator())}},
-						"denominator": &types.Value{Kind: &types.Value_StringValue{StringValue: abort.GetPercentage().GetDenominator()}},
-					},
-				}}},
-			},
-		}}}
-		faultConfig.Fields["abort"] = abortConfig
+	if faultFilterConfig.GetAbort() != nil {
+		faultConfig.Fields["abort"] = buildFaultAbortConfig(faultFilterConfig.GetAbort())
 	}
-
-	if delay != nil {
-		delayConfig := &types.Value{Kind: &types.Value_StructValue{StructValue: &types.Struct{
-			Fields: map[string]*types.Value{
-				"type":        &types.Value{Kind: &types.Value_StringValue{StringValue: delay.GetType()}},
-				"fixed_delay": &types.Value{Kind: &types.Value_StringValue{StringValue: delay.GetFixedDelay().String()}},
-				"percentage": &types.Value{Kind: &types.Value_StructValue{StructValue: &types.Struct{
-					Fields: map[string]*types.Value{
-						"numerator":   &types.Value{Kind: &types.Value_NumberValue{NumberValue: float64(abort.GetPercentage().GetNumerator())}},
-						"denominator": &types.Value{Kind: &types.Value_StringValue{StringValue: abort.GetPercentage().GetDenominator()}},
-					},
-				}}},
-			},
-		}}}
-		faultConfig.Fields["delay"] = delayConfig
+	if faultFilterConfig.GetDelay() != nil {
+		faultConfig.Fields["delay"] = buildFaultDelayConfig(faultFilterConfig.GetDelay())
 	}
 
 	return faultConfig
+}
+
+func buildFaultAbortConfig(faultAbort *config.FaultAbort) *types.Value {
+	abortConfig := &types.Value{Kind: &types.Value_StructValue{StructValue: &types.Struct{
+		Fields: map[string]*types.Value{
+			"http_status": &types.Value{Kind: &types.Value_NumberValue{NumberValue: float64(faultAbort.GetHttpStatus())}},
+			"percentage": &types.Value{Kind: &types.Value_StructValue{StructValue: &types.Struct{
+				Fields: map[string]*types.Value{
+					"numerator":   &types.Value{Kind: &types.Value_NumberValue{NumberValue: float64(faultAbort.GetPercentage().GetNumerator())}},
+					"denominator": &types.Value{Kind: &types.Value_StringValue{StringValue: faultAbort.GetPercentage().GetDenominator()}},
+				},
+			}}},
+		},
+	}}}
+
+	return abortConfig
+}
+
+func buildFaultDelayConfig(faultDelay *config.FaultDelay) *types.Value {
+	delayConfig := &types.Value{Kind: &types.Value_StructValue{StructValue: &types.Struct{
+		Fields: map[string]*types.Value{
+			"type":        &types.Value{Kind: &types.Value_StringValue{StringValue: faultDelay.GetType()}},
+			"fixed_delay": &types.Value{Kind: &types.Value_StringValue{StringValue: faultDelay.GetFixedDelay().String()}},
+			"percentage": &types.Value{Kind: &types.Value_StructValue{StructValue: &types.Struct{
+				Fields: map[string]*types.Value{
+					"numerator":   &types.Value{Kind: &types.Value_NumberValue{NumberValue: float64(faultDelay.GetPercentage().GetNumerator())}},
+					"denominator": &types.Value{Kind: &types.Value_StringValue{StringValue: faultDelay.GetPercentage().GetDenominator()}},
+				},
+			}}},
+		},
+	}}}
+
+	return delayConfig
 }
 
 func buildRoute(dep *config.Dependency, timeout *time.Duration, m route.RouteMatch, retryConfig *config.RetryPolicy) route.Route {
