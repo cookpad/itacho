@@ -4,7 +4,7 @@ require (
 	github.com/aws/aws-sdk-go v1.15.78
 	github.com/envoyproxy/go-control-plane v0.6.0
 	github.com/gogo/googleapis v1.1.0 // indirect
-	github.com/gogo/protobuf v1.1.1
+	github.com/gogo/protobuf v1.2.0
 	github.com/golang/protobuf v1.2.0
 	github.com/google/go-jsonnet v0.11.2
 	github.com/google/uuid v1.0.0

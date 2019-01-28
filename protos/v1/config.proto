@@ -4,6 +4,7 @@ package itacho.api.v1.config;
 option go_package = "api/v1/config";
 
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/duration.proto";
 import "validate/validate.proto";
 
 message ServiceDefinition {
@@ -33,6 +34,8 @@ message Dependency {
 
   // Not used in itacho
   string health_check_path = 11; // nullable
+
+  itacho.api.v1.config.FaultFilterConfig fault_filter_config = 12; // nullable
 }
 
 message CircuitBreaker {
@@ -64,4 +67,25 @@ message RetryPolicy {
 message OutlierDetection {
   // nullable fields
   uint32 consecutive_5xx = 1;
+}
+
+message FaultFilterConfig {
+  itacho.api.v1.config.FaultDelay delay = 1;
+  itacho.api.v1.config.FaultAbort abort = 2;
+}
+
+message FaultDelay {
+  string type = 1 [(validate.rules).string.const = "fixed"];
+  google.protobuf.Duration fixed_delay = 2 [(validate.rules).timestamp.required = true];
+  itacho.api.v1.config.FaultFractionalPercent percentage = 3 [(validate.rules).message.required = true];
+}
+
+message FaultAbort {
+  uint32 http_status = 1 [(validate.rules).uint32.lt = 600];
+  itacho.api.v1.config.FaultFractionalPercent percentage = 2 [(validate.rules).message.required = true];
+}
+
+message FaultFractionalPercent {
+  uint32 numerator = 1 [(validate.rules).uint32.gt = 0];
+  string denominator = 2 [(validate.rules).string = {in: ["HUNDRED", "TEN_THOUSAND", "MILLION"]}];
 }

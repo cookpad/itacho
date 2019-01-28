@@ -136,4 +136,17 @@ Net::HTTP.start(envoy_url.host, envoy_url.port) do |http|
   puts 'pass'
 end
 
+puts 'ensure fault injection config is valid'
+Net::HTTP.start(app_url.host, app_url.port) do |http|
+  response = http.get('/')
+  raise_error if response.code != '200'
+  raise_error if response.body != "GET,#{app_url.host}:#{app_url.port},user"
+end
+Net::HTTP.start(envoy_url.host, envoy_url.port) do |http|
+  response = http.get('/', 'Host' => 'fault-user')
+  raise_error if response.code != '503'
+  raise_error if response.body != 'fault filter abort'
+end
+puts 'pass'
+
 puts 'OK'

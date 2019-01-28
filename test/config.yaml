@@ -31,6 +31,11 @@ static_resources:
                   seconds: 10
             route_config_name: default
           http_filters:
+          - name: envoy.fault
+            config:
+              abort:
+                # default percentage is 0
+                http_status: 503
           - name: envoy.router
   clusters:
   - name: nginx
