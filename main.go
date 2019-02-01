@@ -59,6 +59,21 @@ func main() {
 			},
 		},
 		{
+			Name:   "generate-yaml",
+			Usage:  "generate evaluated jsonnet content into single YAML file",
+			Action: generateYaml,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "source, s",
+					Usage: "load service definition from `FILE`",
+				},
+				cli.StringFlag{
+					Name:  "output, o",
+					Usage: "write YAML to `FILE`",
+				},
+			},
+		},
+		{
 			Name:    "server",
 			Aliases: []string{"s"},
 			Usage:   "run xDS POST-GET convert proxy",
@@ -140,6 +155,20 @@ func generate(ctx *cli.Context) error {
 	}
 
 	return generator.Generate(opts)
+}
+
+func generateYaml(ctx *cli.Context) error {
+	source := ctx.String("source")
+	if len(source) < 1 {
+		return buildEmptyFlagError("source")
+	}
+
+	output := ctx.String("output")
+	if len(output) < 1 {
+		return buildEmptyFlagError("output")
+	}
+
+	return generator.GenerateYaml(source, output)
 }
 
 func serverCmd(ctx *cli.Context) error {

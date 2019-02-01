@@ -15,6 +15,7 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	jsonnet "github.com/google/go-jsonnet"
 	log "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 
 	config "github.com/cookpad/itacho/api/v1/config"
 	"github.com/cookpad/itacho/xds"
@@ -75,6 +76,39 @@ func Generate(opts Opts) error {
 	}
 	log.Infof("Generated xDS response: %s", outPath)
 
+	return nil
+}
+
+// GenerateYaml writes evaluated Jsonnet content into `output` as YAML format.
+func GenerateYaml(source string, output string) error {
+	content, err := ioutil.ReadFile(source)
+	if err != nil {
+		return fmt.Errorf(`Failed to open file "%s": %s`, source, err)
+	}
+
+	vm := jsonnet.MakeVM()
+	jsonStr, err := vm.EvaluateSnippet(source, string(content))
+	if err != nil {
+		return fmt.Errorf(`Failed to evaluate Jsonnet file "%s": %s`, source, err)
+	}
+
+	m := make(map[string]interface{})
+	if err := yaml.Unmarshal([]byte(jsonStr), &m); err != nil {
+		return fmt.Errorf("Failed to Unmarshal json string: %s", err)
+	}
+	yamlStr, err := yaml.Marshal(&m)
+	if err != nil {
+		return fmt.Errorf("Failed to marshal hash map into YAML: %s", err)
+	}
+
+	if err := os.MkdirAll(filepath.Dir(output), os.ModePerm); err != nil {
+		return fmt.Errorf("Failed to create output directories: %s", err)
+	}
+	if err := ioutil.WriteFile(output, []byte(yamlStr), 0644); err != nil {
+		return fmt.Errorf("Failed to write YAML content: %s", err)
+	}
+
+	log.Infof("Generated YAML file: %s", output)
 	return nil
 }
 
