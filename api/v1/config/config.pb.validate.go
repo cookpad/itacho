@@ -223,6 +223,16 @@ func (m *Dependency) Validate() error {
 		}
 	}
 
+	if v, ok := interface{}(m.GetHeaders()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return DependencyValidationError{
+				field:  "Headers",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	switch m.DiscoveryOption.(type) {
 
 	case *Dependency_Lb:
@@ -999,3 +1009,250 @@ var _FaultFractionalPercent_Denominator_InLookup = map[string]struct{}{
 	"TEN_THOUSAND": {},
 	"MILLION":      {},
 }
+
+// Validate checks the field values on Headers with the rules defined in the
+// proto definition for this message. If any rules are violated, an error is returned.
+func (m *Headers) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	for idx, item := range m.GetRequestHeadersToAdd() {
+		_, _ = idx, item
+
+		if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return HeadersValidationError{
+					field:  fmt.Sprintf("RequestHeadersToAdd[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// HeadersValidationError is the validation error returned by Headers.Validate
+// if the designated constraints aren't met.
+type HeadersValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e HeadersValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e HeadersValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e HeadersValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e HeadersValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e HeadersValidationError) ErrorName() string { return "HeadersValidationError" }
+
+// Error satisfies the builtin error interface
+func (e HeadersValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sHeaders.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = HeadersValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = HeadersValidationError{}
+
+// Validate checks the field values on HeaderValueOption with the rules defined
+// in the proto definition for this message. If any rules are violated, an
+// error is returned.
+func (m *HeaderValueOption) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	if m.GetHeader() == nil {
+		return HeaderValueOptionValidationError{
+			field:  "Header",
+			reason: "value is required",
+		}
+	}
+
+	if v, ok := interface{}(m.GetHeader()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return HeaderValueOptionValidationError{
+				field:  "Header",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if v, ok := interface{}(m.GetAppend()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return HeaderValueOptionValidationError{
+				field:  "Append",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	return nil
+}
+
+// HeaderValueOptionValidationError is the validation error returned by
+// HeaderValueOption.Validate if the designated constraints aren't met.
+type HeaderValueOptionValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e HeaderValueOptionValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e HeaderValueOptionValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e HeaderValueOptionValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e HeaderValueOptionValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e HeaderValueOptionValidationError) ErrorName() string {
+	return "HeaderValueOptionValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e HeaderValueOptionValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sHeaderValueOption.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = HeaderValueOptionValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = HeaderValueOptionValidationError{}
+
+// Validate checks the field values on HeaderValue with the rules defined in
+// the proto definition for this message. If any rules are violated, an error
+// is returned.
+func (m *HeaderValue) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	if utf8.RuneCountInString(m.GetKey()) < 1 {
+		return HeaderValueValidationError{
+			field:  "Key",
+			reason: "value length must be at least 1 runes",
+		}
+	}
+
+	// no validation rules for Value
+
+	return nil
+}
+
+// HeaderValueValidationError is the validation error returned by
+// HeaderValue.Validate if the designated constraints aren't met.
+type HeaderValueValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e HeaderValueValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e HeaderValueValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e HeaderValueValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e HeaderValueValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e HeaderValueValidationError) ErrorName() string { return "HeaderValueValidationError" }
+
+// Error satisfies the builtin error interface
+func (e HeaderValueValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sHeaderValue.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = HeaderValueValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = HeaderValueValidationError{}

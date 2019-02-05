@@ -4,6 +4,7 @@ import (
 	"time"
 
 	api "github.com/envoyproxy/go-control-plane/envoy/api/v2"
+	core "github.com/envoyproxy/go-control-plane/envoy/api/v2/core"
 	route "github.com/envoyproxy/go-control-plane/envoy/api/v2/route"
 	"github.com/gogo/protobuf/proto"
 	"github.com/gogo/protobuf/types"
@@ -46,6 +47,26 @@ func convertToVirtualHost(dep *config.Dependency) (*route.VirtualHost, error) {
 		Name:    dep.GetName(),
 		Domains: []string{dep.GetName()},
 		Routes:  routes,
+	}
+
+	headerConfig := dep.GetHeaders()
+	if headerConfig != nil {
+		if len(headerConfig.GetRequestHeadersToAdd()) > 0 {
+			opts := make([]*core.HeaderValueOption, 0)
+			for _, opt := range headerConfig.GetRequestHeadersToAdd() {
+				o := core.HeaderValueOption{
+					Header: &core.HeaderValue{
+						Key:   opt.GetHeader().GetKey(),
+						Value: opt.GetHeader().GetValue(),
+					},
+				}
+				if opt.GetAppend() != nil && opt.GetAppend().Value {
+					o.Append = &types.BoolValue{Value: true}
+				}
+				opts = append(opts, &o)
+			}
+			virtualHost.RequestHeadersToAdd = opts
+		}
 	}
 
 	if dep.GetFaultFilterConfig() != nil {
