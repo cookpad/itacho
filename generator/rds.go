@@ -60,8 +60,8 @@ func convertToVirtualHost(dep *config.Dependency) (*route.VirtualHost, error) {
 						Value: opt.GetHeader().GetValue(),
 					},
 				}
-				if opt.GetAppend() != nil && opt.GetAppend().Value {
-					o.Append = &types.BoolValue{Value: true}
+				if opt.GetAppend() != nil && !opt.GetAppend().Value {
+					o.Append = &types.BoolValue{Value: false}
 				}
 				opts = append(opts, &o)
 			}
