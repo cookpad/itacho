@@ -9,6 +9,16 @@ local routes = import 'routes.libsonnet';
       cluster_name: 'user-development',
       lb: 'user-app:8080',
       host_header: 'user-service',
+      headers: {
+        request_headers_to_add: [
+          {
+            header: {
+              key: 'X-Test',
+              value: 'abc',
+            },
+          },
+        ],
+      },
       tls: false,
       connect_timeout_ms: 250,
       circuit_breaker: circuit_breaker,

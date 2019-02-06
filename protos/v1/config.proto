@@ -36,6 +36,8 @@ message Dependency {
   string health_check_path = 11; // nullable
 
   itacho.api.v1.config.FaultFilterConfig fault_filter_config = 12; // nullable
+
+  itacho.api.v1.config.Headers headers = 13; // nullable
 }
 
 message CircuitBreaker {
@@ -88,4 +90,18 @@ message FaultAbort {
 message FaultFractionalPercent {
   uint32 numerator = 1 [(validate.rules).uint32.gt = 0];
   string denominator = 2 [(validate.rules).string = {in: ["HUNDRED", "TEN_THOUSAND", "MILLION"]}];
+}
+
+message Headers {
+  repeated itacho.api.v1.config.HeaderValueOption request_headers_to_add = 1;
+}
+
+message HeaderValueOption {
+  itacho.api.v1.config.HeaderValue header = 1 [(validate.rules).message.required = true];
+  google.protobuf.BoolValue append = 2;
+}
+
+message HeaderValue {
+  string key = 1 [(validate.rules).string.min_len = 1];
+  string value = 2;
 }
