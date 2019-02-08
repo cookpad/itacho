@@ -233,6 +233,21 @@ func (m *Dependency) Validate() error {
 		}
 	}
 
+	for idx, item := range m.GetHealthChecks() {
+		_, _ = idx, item
+
+		if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return DependencyValidationError{
+					field:  fmt.Sprintf("HealthChecks[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
 	switch m.DiscoveryOption.(type) {
 
 	case *Dependency_Lb:
@@ -1256,3 +1271,259 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = HeaderValueValidationError{}
+
+// Validate checks the field values on HealthCheck with the rules defined in
+// the proto definition for this message. If any rules are violated, an error
+// is returned.
+func (m *HealthCheck) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	if m.GetTimeout() == nil {
+		return HealthCheckValidationError{
+			field:  "Timeout",
+			reason: "value is required",
+		}
+	}
+
+	if d := m.GetTimeout(); d != nil {
+		dur, err := types.DurationFromProto(d)
+		if err != nil {
+			return HealthCheckValidationError{
+				field:  "Timeout",
+				reason: "value is not a valid duration",
+				cause:  err,
+			}
+		}
+
+		gt := time.Duration(0*time.Second + 0*time.Nanosecond)
+
+		if dur <= gt {
+			return HealthCheckValidationError{
+				field:  "Timeout",
+				reason: "value must be greater than 0s",
+			}
+		}
+
+	}
+
+	if m.GetInterval() == nil {
+		return HealthCheckValidationError{
+			field:  "Interval",
+			reason: "value is required",
+		}
+	}
+
+	if d := m.GetInterval(); d != nil {
+		dur, err := types.DurationFromProto(d)
+		if err != nil {
+			return HealthCheckValidationError{
+				field:  "Interval",
+				reason: "value is not a valid duration",
+				cause:  err,
+			}
+		}
+
+		gt := time.Duration(0*time.Second + 0*time.Nanosecond)
+
+		if dur <= gt {
+			return HealthCheckValidationError{
+				field:  "Interval",
+				reason: "value must be greater than 0s",
+			}
+		}
+
+	}
+
+	if m.GetUnhealthyThreshold() <= 0 {
+		return HealthCheckValidationError{
+			field:  "UnhealthyThreshold",
+			reason: "value must be greater than 0",
+		}
+	}
+
+	if m.GetHealthyThreshold() <= 0 {
+		return HealthCheckValidationError{
+			field:  "HealthyThreshold",
+			reason: "value must be greater than 0",
+		}
+	}
+
+	if m.GetNoTrafficInterval() == nil {
+		return HealthCheckValidationError{
+			field:  "NoTrafficInterval",
+			reason: "value is required",
+		}
+	}
+
+	if d := m.GetNoTrafficInterval(); d != nil {
+		dur, err := types.DurationFromProto(d)
+		if err != nil {
+			return HealthCheckValidationError{
+				field:  "NoTrafficInterval",
+				reason: "value is not a valid duration",
+				cause:  err,
+			}
+		}
+
+		gt := time.Duration(0*time.Second + 0*time.Nanosecond)
+
+		if dur <= gt {
+			return HealthCheckValidationError{
+				field:  "NoTrafficInterval",
+				reason: "value must be greater than 0s",
+			}
+		}
+
+	}
+
+	if m.GetUnhealthyInterval() == nil {
+		return HealthCheckValidationError{
+			field:  "UnhealthyInterval",
+			reason: "value is required",
+		}
+	}
+
+	if d := m.GetUnhealthyInterval(); d != nil {
+		dur, err := types.DurationFromProto(d)
+		if err != nil {
+			return HealthCheckValidationError{
+				field:  "UnhealthyInterval",
+				reason: "value is not a valid duration",
+				cause:  err,
+			}
+		}
+
+		gt := time.Duration(0*time.Second + 0*time.Nanosecond)
+
+		if dur <= gt {
+			return HealthCheckValidationError{
+				field:  "UnhealthyInterval",
+				reason: "value must be greater than 0s",
+			}
+		}
+
+	}
+
+	if m.GetUnhealthyEdgeInterval() == nil {
+		return HealthCheckValidationError{
+			field:  "UnhealthyEdgeInterval",
+			reason: "value is required",
+		}
+	}
+
+	if d := m.GetUnhealthyEdgeInterval(); d != nil {
+		dur, err := types.DurationFromProto(d)
+		if err != nil {
+			return HealthCheckValidationError{
+				field:  "UnhealthyEdgeInterval",
+				reason: "value is not a valid duration",
+				cause:  err,
+			}
+		}
+
+		gt := time.Duration(0*time.Second + 0*time.Nanosecond)
+
+		if dur <= gt {
+			return HealthCheckValidationError{
+				field:  "UnhealthyEdgeInterval",
+				reason: "value must be greater than 0s",
+			}
+		}
+
+	}
+
+	if m.GetHealthyEdgeInterval() == nil {
+		return HealthCheckValidationError{
+			field:  "HealthyEdgeInterval",
+			reason: "value is required",
+		}
+	}
+
+	if d := m.GetHealthyEdgeInterval(); d != nil {
+		dur, err := types.DurationFromProto(d)
+		if err != nil {
+			return HealthCheckValidationError{
+				field:  "HealthyEdgeInterval",
+				reason: "value is not a valid duration",
+				cause:  err,
+			}
+		}
+
+		gt := time.Duration(0*time.Second + 0*time.Nanosecond)
+
+		if dur <= gt {
+			return HealthCheckValidationError{
+				field:  "HealthyEdgeInterval",
+				reason: "value must be greater than 0s",
+			}
+		}
+
+	}
+
+	if utf8.RuneCountInString(m.GetEventLogPath()) < 1 {
+		return HealthCheckValidationError{
+			field:  "EventLogPath",
+			reason: "value length must be at least 1 runes",
+		}
+	}
+
+	// no validation rules for AlwaysLogHealthCheckFailures
+
+	return nil
+}
+
+// HealthCheckValidationError is the validation error returned by
+// HealthCheck.Validate if the designated constraints aren't met.
+type HealthCheckValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e HealthCheckValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e HealthCheckValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e HealthCheckValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e HealthCheckValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e HealthCheckValidationError) ErrorName() string { return "HealthCheckValidationError" }
+
+// Error satisfies the builtin error interface
+func (e HealthCheckValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sHealthCheck.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = HealthCheckValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = HealthCheckValidationError{}

@@ -2,7 +2,7 @@ module github.com/cookpad/itacho
 
 require (
 	github.com/aws/aws-sdk-go v1.15.78
-	github.com/envoyproxy/go-control-plane v0.6.0
+	github.com/envoyproxy/go-control-plane v0.6.4
 	github.com/gogo/googleapis v1.1.0 // indirect
 	github.com/gogo/protobuf v1.2.0
 	github.com/golang/protobuf v1.2.0
