@@ -40,6 +40,20 @@ local routes = import 'routes.libsonnet';
       outlier_detection: {
         consecutive_5xx: 3,
       },
+      health_checks: [
+        {
+          timeout: '3s',
+          interval: '10s',
+          unhealthy_threshold: 3,
+          healthy_threshold: 3,
+          no_traffic_interval: '30s',
+          unhealthy_interval: '5s',
+          unhealthy_edge_interval: '1s',
+          healthy_edge_interval: '1s',
+          event_log_path: '/dev/stderr',
+          always_log_health_check_failures: true,
+        },
+      ],
       routes: [
         {
           path: '/grpc.health.v1.Health/Check',

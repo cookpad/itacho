@@ -69,6 +69,43 @@ func convertToCluster(dep *config.Dependency, opts Opts) (*api.Cluster, error) {
 		}
 	}
 
+	if sds != nil && sds.Value {
+		hcConfigs := dep.GetHealthChecks()
+		if hcConfigs != nil && len(hcConfigs) > 0 {
+			hcs := make([]*core.HealthCheck, len(hcConfigs))
+			for i, hcConfig := range hcConfigs {
+				timeout, err := time.ParseDuration(hcConfig.GetTimeout().String())
+				if err != nil {
+					return nil, err
+				}
+				interval, err := time.ParseDuration(hcConfig.GetInterval().String())
+				if err != nil {
+					return nil, err
+				}
+				hc := core.HealthCheck{
+					Timeout:               &timeout,
+					Interval:              &interval,
+					HealthyThreshold:      &types.UInt32Value{Value: hcConfig.GetHealthyThreshold()},
+					UnhealthyThreshold:    &types.UInt32Value{Value: hcConfig.GetUnhealthyThreshold()},
+					NoTrafficInterval:     hcConfig.GetNoTrafficInterval(),
+					UnhealthyInterval:     hcConfig.GetUnhealthyInterval(),
+					UnhealthyEdgeInterval: hcConfig.GetUnhealthyEdgeInterval(),
+					HealthyEdgeInterval:   hcConfig.GetHealthyEdgeInterval(),
+					HealthChecker: &core.HealthCheck_GrpcHealthCheck_{
+						GrpcHealthCheck: &core.HealthCheck_GrpcHealthCheck{
+							ServiceName: dep.GetName(),
+						},
+					},
+					EventLogPath:                 hcConfig.GetEventLogPath(),
+					AlwaysLogHealthCheckFailures: hcConfig.GetAlwaysLogHealthCheckFailures(),
+				}
+				hcs[i] = &hc
+			}
+			c.HealthChecks = hcs
+			c.DrainConnectionsOnHostRemoval = true
+		}
+	}
+
 	return c, nil
 }
 
@@ -80,11 +117,12 @@ func convertToEdsCluster(dep *config.Dependency, opts Opts) (*api.Cluster, error
 	}
 
 	c := api.Cluster{
-		Name:              dep.GetClusterName(),
-		Type:              api.Cluster_EDS,
-		ConnectTimeout:    time.Duration(dep.GetConnectTimeoutMs()*1000*1000) * time.Nanosecond,
-		LbPolicy:          api.Cluster_ROUND_ROBIN,
-		ProtocolSelection: api.Cluster_USE_DOWNSTREAM_PROTOCOL,
+		Name:                 dep.GetClusterName(),
+		Type:                 api.Cluster_EDS,
+		ConnectTimeout:       time.Duration(dep.GetConnectTimeoutMs()*1000*1000) * time.Nanosecond,
+		LbPolicy:             api.Cluster_ROUND_ROBIN,
+		Http2ProtocolOptions: &core.Http2ProtocolOptions{},
+		ProtocolSelection:    api.Cluster_USE_DOWNSTREAM_PROTOCOL,
 		EdsClusterConfig: &api.Cluster_EdsClusterConfig{
 			EdsConfig: &core.ConfigSource{
 				ConfigSourceSpecifier: &core.ConfigSource_ApiConfigSource{
