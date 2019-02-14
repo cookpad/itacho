@@ -185,7 +185,7 @@ func buildFaultDelayConfig(faultDelay *config.FaultDelay) *types.Value {
 func buildRoute(dep *config.Dependency, timeout *time.Duration, m route.RouteMatch, retryConfig *config.RetryPolicy) route.Route {
 	var policy *route.RouteAction_RetryPolicy
 	if retryConfig != nil {
-		perTryTimeout := time.Duration(retryConfig.GetPerTryTimeoutMs()*1000*1000) * time.Nanosecond
+		perTryTimeout := time.Duration(retryConfig.GetPerTryTimeoutMs()) * time.Millisecond
 		policy = &route.RouteAction_RetryPolicy{
 			RetryOn:       retryConfig.GetRetryOn(),
 			NumRetries:    &types.UInt32Value{Value: retryConfig.GetNumRetries()},
