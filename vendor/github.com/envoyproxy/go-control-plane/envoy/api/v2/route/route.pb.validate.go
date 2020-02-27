@@ -103,6 +103,13 @@ func (m *VirtualHost) Validate() error {
 
 	}
 
+	if len(m.GetRequestHeadersToAdd()) > 1000 {
+		return VirtualHostValidationError{
+			Field:  "RequestHeadersToAdd",
+			Reason: "value must contain no more than 1000 item(s)",
+		}
+	}
+
 	for idx, item := range m.GetRequestHeadersToAdd() {
 		_, _ = idx, item
 
@@ -116,6 +123,13 @@ func (m *VirtualHost) Validate() error {
 			}
 		}
 
+	}
+
+	if len(m.GetResponseHeadersToAdd()) > 1000 {
+		return VirtualHostValidationError{
+			Field:  "ResponseHeadersToAdd",
+			Reason: "value must contain no more than 1000 item(s)",
+		}
 	}
 
 	for idx, item := range m.GetResponseHeadersToAdd() {
@@ -144,6 +158,10 @@ func (m *VirtualHost) Validate() error {
 	}
 
 	// no validation rules for PerFilterConfig
+
+	// no validation rules for TypedPerFilterConfig
+
+	// no validation rules for IncludeRequestAttemptCount
 
 	return nil
 }
@@ -218,6 +236,15 @@ func (m *Route) Validate() error {
 
 	// no validation rules for PerFilterConfig
 
+	// no validation rules for TypedPerFilterConfig
+
+	if len(m.GetRequestHeadersToAdd()) > 1000 {
+		return RouteValidationError{
+			Field:  "RequestHeadersToAdd",
+			Reason: "value must contain no more than 1000 item(s)",
+		}
+	}
+
 	for idx, item := range m.GetRequestHeadersToAdd() {
 		_, _ = idx, item
 
@@ -231,6 +258,13 @@ func (m *Route) Validate() error {
 			}
 		}
 
+	}
+
+	if len(m.GetResponseHeadersToAdd()) > 1000 {
+		return RouteValidationError{
+			Field:  "ResponseHeadersToAdd",
+			Reason: "value must contain no more than 1000 item(s)",
+		}
 	}
 
 	for idx, item := range m.GetResponseHeadersToAdd() {
@@ -422,10 +456,10 @@ func (m *RouteMatch) Validate() error {
 		}
 	}
 
-	if v, ok := interface{}(m.GetRuntime()).(interface{ Validate() error }); ok {
+	if v, ok := interface{}(m.GetRuntimeFraction()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return RouteMatchValidationError{
-				Field:  "Runtime",
+				Field:  "RuntimeFraction",
 				Reason: "embedded message failed validation",
 				Cause:  err,
 			}
@@ -755,26 +789,6 @@ func (m *RouteAction) Validate() error {
 
 	}
 
-	if v, ok := interface{}(m.GetUseWebsocket()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RouteActionValidationError{
-				Field:  "UseWebsocket",
-				Reason: "embedded message failed validation",
-				Cause:  err,
-			}
-		}
-	}
-
-	if v, ok := interface{}(m.GetWebsocketConfig()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RouteActionValidationError{
-				Field:  "WebsocketConfig",
-				Reason: "embedded message failed validation",
-				Cause:  err,
-			}
-		}
-	}
-
 	if v, ok := interface{}(m.GetCors()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return RouteActionValidationError{
@@ -793,6 +807,21 @@ func (m *RouteAction) Validate() error {
 				Cause:  err,
 			}
 		}
+	}
+
+	for idx, item := range m.GetUpgradeConfigs() {
+		_, _ = idx, item
+
+		if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RouteActionValidationError{
+					Field:  fmt.Sprintf("UpgradeConfigs[%v]", idx),
+					Reason: "embedded message failed validation",
+					Cause:  err,
+				}
+			}
+		}
+
 	}
 
 	switch m.ClusterSpecifier.(type) {
@@ -898,6 +927,8 @@ func (m *RedirectAction) Validate() error {
 
 	// no validation rules for HostRedirect
 
+	// no validation rules for PortRedirect
+
 	if _, ok := RedirectAction_RedirectResponseCode_name[int32(m.GetResponseCode())]; !ok {
 		return RedirectActionValidationError{
 			Field:  "ResponseCode",
@@ -905,9 +936,17 @@ func (m *RedirectAction) Validate() error {
 		}
 	}
 
-	// no validation rules for HttpsRedirect
-
 	// no validation rules for StripQuery
+
+	switch m.SchemeRewriteSpecifier.(type) {
+
+	case *RedirectAction_HttpsRedirect:
+		// no validation rules for HttpsRedirect
+
+	case *RedirectAction_SchemeRedirect:
+		// no validation rules for SchemeRedirect
+
+	}
 
 	switch m.PathRewriteSpecifier.(type) {
 
@@ -1390,6 +1429,13 @@ func (m *WeightedCluster_ClusterWeight) Validate() error {
 		}
 	}
 
+	if len(m.GetRequestHeadersToAdd()) > 1000 {
+		return WeightedCluster_ClusterWeightValidationError{
+			Field:  "RequestHeadersToAdd",
+			Reason: "value must contain no more than 1000 item(s)",
+		}
+	}
+
 	for idx, item := range m.GetRequestHeadersToAdd() {
 		_, _ = idx, item
 
@@ -1403,6 +1449,13 @@ func (m *WeightedCluster_ClusterWeight) Validate() error {
 			}
 		}
 
+	}
+
+	if len(m.GetResponseHeadersToAdd()) > 1000 {
+		return WeightedCluster_ClusterWeightValidationError{
+			Field:  "ResponseHeadersToAdd",
+			Reason: "value must contain no more than 1000 item(s)",
+		}
 	}
 
 	for idx, item := range m.GetResponseHeadersToAdd() {
@@ -1421,6 +1474,8 @@ func (m *WeightedCluster_ClusterWeight) Validate() error {
 	}
 
 	// no validation rules for PerFilterConfig
+
+	// no validation rules for TypedPerFilterConfig
 
 	return nil
 }
@@ -1733,48 +1788,32 @@ func (e RouteAction_HashPolicyValidationError) Error() string {
 
 var _ error = RouteAction_HashPolicyValidationError{}
 
-// Validate checks the field values on RouteAction_WebSocketProxyConfig with
-// the rules defined in the proto definition for this message. If any rules
-// are violated, an error is returned.
-func (m *RouteAction_WebSocketProxyConfig) Validate() error {
+// Validate checks the field values on RouteAction_UpgradeConfig with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *RouteAction_UpgradeConfig) Validate() error {
 	if m == nil {
 		return nil
 	}
 
-	// no validation rules for StatPrefix
+	// no validation rules for UpgradeType
 
-	if d := m.GetIdleTimeout(); d != nil {
-		dur := *d
-
-		gt := time.Duration(0*time.Second + 0*time.Nanosecond)
-
-		if dur <= gt {
-			return RouteAction_WebSocketProxyConfigValidationError{
-				Field:  "IdleTimeout",
-				Reason: "value must be greater than 0s",
+	if v, ok := interface{}(m.GetEnabled()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return RouteAction_UpgradeConfigValidationError{
+				Field:  "Enabled",
+				Reason: "embedded message failed validation",
+				Cause:  err,
 			}
 		}
-
-	}
-
-	if wrapper := m.GetMaxConnectAttempts(); wrapper != nil {
-
-		if wrapper.GetValue() < 1 {
-			return RouteAction_WebSocketProxyConfigValidationError{
-				Field:  "MaxConnectAttempts",
-				Reason: "value must be greater than or equal to 1",
-			}
-		}
-
 	}
 
 	return nil
 }
 
-// RouteAction_WebSocketProxyConfigValidationError is the validation error
-// returned by RouteAction_WebSocketProxyConfig.Validate if the designated
-// constraints aren't met.
-type RouteAction_WebSocketProxyConfigValidationError struct {
+// RouteAction_UpgradeConfigValidationError is the validation error returned by
+// RouteAction_UpgradeConfig.Validate if the designated constraints aren't met.
+type RouteAction_UpgradeConfigValidationError struct {
 	Field  string
 	Reason string
 	Cause  error
@@ -1782,7 +1821,7 @@ type RouteAction_WebSocketProxyConfigValidationError struct {
 }
 
 // Error satisfies the builtin error interface
-func (e RouteAction_WebSocketProxyConfigValidationError) Error() string {
+func (e RouteAction_UpgradeConfigValidationError) Error() string {
 	cause := ""
 	if e.Cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.Cause)
@@ -1794,14 +1833,14 @@ func (e RouteAction_WebSocketProxyConfigValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sRouteAction_WebSocketProxyConfig.%s: %s%s",
+		"invalid %sRouteAction_UpgradeConfig.%s: %s%s",
 		key,
 		e.Field,
 		e.Reason,
 		cause)
 }
 
-var _ error = RouteAction_WebSocketProxyConfigValidationError{}
+var _ error = RouteAction_UpgradeConfigValidationError{}
 
 // Validate checks the field values on RouteAction_RetryPolicy_RetryPriority
 // with the rules defined in the proto definition for this message. If any
@@ -1818,14 +1857,32 @@ func (m *RouteAction_RetryPolicy_RetryPriority) Validate() error {
 		}
 	}
 
-	if v, ok := interface{}(m.GetConfig()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RouteAction_RetryPolicy_RetryPriorityValidationError{
-				Field:  "Config",
-				Reason: "embedded message failed validation",
-				Cause:  err,
+	switch m.ConfigType.(type) {
+
+	case *RouteAction_RetryPolicy_RetryPriority_Config:
+
+		if v, ok := interface{}(m.GetConfig()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RouteAction_RetryPolicy_RetryPriorityValidationError{
+					Field:  "Config",
+					Reason: "embedded message failed validation",
+					Cause:  err,
+				}
 			}
 		}
+
+	case *RouteAction_RetryPolicy_RetryPriority_TypedConfig:
+
+		if v, ok := interface{}(m.GetTypedConfig()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RouteAction_RetryPolicy_RetryPriorityValidationError{
+					Field:  "TypedConfig",
+					Reason: "embedded message failed validation",
+					Cause:  err,
+				}
+			}
+		}
+
 	}
 
 	return nil
@@ -1878,14 +1935,32 @@ func (m *RouteAction_RetryPolicy_RetryHostPredicate) Validate() error {
 		}
 	}
 
-	if v, ok := interface{}(m.GetConfig()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return RouteAction_RetryPolicy_RetryHostPredicateValidationError{
-				Field:  "Config",
-				Reason: "embedded message failed validation",
-				Cause:  err,
+	switch m.ConfigType.(type) {
+
+	case *RouteAction_RetryPolicy_RetryHostPredicate_Config:
+
+		if v, ok := interface{}(m.GetConfig()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RouteAction_RetryPolicy_RetryHostPredicateValidationError{
+					Field:  "Config",
+					Reason: "embedded message failed validation",
+					Cause:  err,
+				}
 			}
 		}
+
+	case *RouteAction_RetryPolicy_RetryHostPredicate_TypedConfig:
+
+		if v, ok := interface{}(m.GetTypedConfig()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RouteAction_RetryPolicy_RetryHostPredicateValidationError{
+					Field:  "TypedConfig",
+					Reason: "embedded message failed validation",
+					Cause:  err,
+				}
+			}
+		}
+
 	}
 
 	return nil

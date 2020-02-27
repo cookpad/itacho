@@ -64,7 +64,7 @@ func (x HttpConnectionManager_CodecType) String() string {
 	return proto.EnumName(HttpConnectionManager_CodecType_name, int32(x))
 }
 func (HttpConnectionManager_CodecType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{0, 0}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{0, 0}
 }
 
 // How to handle the :ref:`config_http_conn_man_headers_x-forwarded-client-cert` (XFCC) HTTP
@@ -107,7 +107,7 @@ func (x HttpConnectionManager_ForwardClientCertDetails) String() string {
 	return proto.EnumName(HttpConnectionManager_ForwardClientCertDetails_name, int32(x))
 }
 func (HttpConnectionManager_ForwardClientCertDetails) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{0, 1}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{0, 1}
 }
 
 type HttpConnectionManager_Tracing_OperationName int32
@@ -132,10 +132,10 @@ func (x HttpConnectionManager_Tracing_OperationName) String() string {
 	return proto.EnumName(HttpConnectionManager_Tracing_OperationName_name, int32(x))
 }
 func (HttpConnectionManager_Tracing_OperationName) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{0, 0, 0}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{0, 0, 0}
 }
 
-// [#comment:next free field: 25]
+// [#comment:next free field: 29]
 type HttpConnectionManager struct {
 	// Supplies the type of codec that the connection manager should use.
 	CodecType HttpConnectionManager_CodecType `protobuf:"varint,1,opt,name=codec_type,json=codecType,proto3,enum=envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager_CodecType" json:"codec_type,omitempty"`
@@ -150,19 +150,19 @@ type HttpConnectionManager struct {
 	// A list of individual HTTP filters that make up the filter chain for
 	// requests made to the connection manager. Order matters as the filters are
 	// processed sequentially as request events happen.
-	HttpFilters []*HttpFilter `protobuf:"bytes,5,rep,name=http_filters,json=httpFilters" json:"http_filters,omitempty"`
+	HttpFilters []*HttpFilter `protobuf:"bytes,5,rep,name=http_filters,json=httpFilters,proto3" json:"http_filters,omitempty"`
 	// Whether the connection manager manipulates the :ref:`config_http_conn_man_headers_user-agent`
 	// and :ref:`config_http_conn_man_headers_downstream-service-cluster` headers. See the linked
 	// documentation for more information. Defaults to false.
-	AddUserAgent *types.BoolValue `protobuf:"bytes,6,opt,name=add_user_agent,json=addUserAgent" json:"add_user_agent,omitempty"`
+	AddUserAgent *types.BoolValue `protobuf:"bytes,6,opt,name=add_user_agent,json=addUserAgent,proto3" json:"add_user_agent,omitempty"`
 	// Presence of the object defines whether the connection manager
 	// emits :ref:`tracing <arch_overview_tracing>` data to the :ref:`configured tracing provider
 	// <envoy_api_msg_config.trace.v2.Tracing>`.
-	Tracing *HttpConnectionManager_Tracing `protobuf:"bytes,7,opt,name=tracing" json:"tracing,omitempty"`
+	Tracing *HttpConnectionManager_Tracing `protobuf:"bytes,7,opt,name=tracing,proto3" json:"tracing,omitempty"`
 	// Additional HTTP/1 settings that are passed to the HTTP/1 codec.
-	HttpProtocolOptions *core.Http1ProtocolOptions `protobuf:"bytes,8,opt,name=http_protocol_options,json=httpProtocolOptions" json:"http_protocol_options,omitempty"`
+	HttpProtocolOptions *core.Http1ProtocolOptions `protobuf:"bytes,8,opt,name=http_protocol_options,json=httpProtocolOptions,proto3" json:"http_protocol_options,omitempty"`
 	// Additional HTTP/2 settings that are passed directly to the HTTP/2 codec.
-	Http2ProtocolOptions *core.Http2ProtocolOptions `protobuf:"bytes,9,opt,name=http2_protocol_options,json=http2ProtocolOptions" json:"http2_protocol_options,omitempty"`
+	Http2ProtocolOptions *core.Http2ProtocolOptions `protobuf:"bytes,9,opt,name=http2_protocol_options,json=http2ProtocolOptions,proto3" json:"http2_protocol_options,omitempty"`
 	// An optional override that the connection manager will write to the server
 	// header in responses. If not set, the default is *envoy*.
 	ServerName string `protobuf:"bytes,10,opt,name=server_name,json=serverName,proto3" json:"server_name,omitempty"`
@@ -173,7 +173,7 @@ type HttpConnectionManager struct {
 	// connection a drain sequence will occur prior to closing the connection. See
 	// :ref:`drain_timeout
 	// <envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.drain_timeout>`.
-	IdleTimeout *time.Duration `protobuf:"bytes,11,opt,name=idle_timeout,json=idleTimeout,stdduration" json:"idle_timeout,omitempty"`
+	IdleTimeout *time.Duration `protobuf:"bytes,11,opt,name=idle_timeout,json=idleTimeout,proto3,stdduration" json:"idle_timeout,omitempty"`
 	// The stream idle timeout for connections managed by the connection manager.
 	// If not specified, this defaults to 5 minutes. The default value was selected
 	// so as not to interfere with any smaller configured timeouts that may have
@@ -199,7 +199,12 @@ type HttpConnectionManager struct {
 	//
 	// A value of 0 will completely disable the connection manager stream idle
 	// timeout, although per-route idle timeout overrides will continue to apply.
-	StreamIdleTimeout *time.Duration `protobuf:"bytes,24,opt,name=stream_idle_timeout,json=streamIdleTimeout,stdduration" json:"stream_idle_timeout,omitempty"`
+	StreamIdleTimeout *time.Duration `protobuf:"bytes,24,opt,name=stream_idle_timeout,json=streamIdleTimeout,proto3,stdduration" json:"stream_idle_timeout,omitempty"`
+	// A timeout for idle requests managed by the connection manager.
+	// The timer is activated when the request is initiated, and is disarmed when the last byte of the
+	// request is sent upstream (i.e. all decoding filters have processed the request), OR when the
+	// response is initiated. If not specified or set to 0, this timeout is disabled.
+	RequestTimeout *time.Duration `protobuf:"bytes,28,opt,name=request_timeout,json=requestTimeout,proto3,stdduration" json:"request_timeout,omitempty"`
 	// The time that Envoy will wait between sending an HTTP/2 “shutdown
 	// notification” (GOAWAY frame with max stream ID) and a final GOAWAY frame.
 	// This is used so that Envoy provides a grace period for new streams that
@@ -209,10 +214,28 @@ type HttpConnectionManager struct {
 	// both when a connection hits the idle timeout or during general server
 	// draining. The default grace period is 5000 milliseconds (5 seconds) if this
 	// option is not specified.
-	DrainTimeout *time.Duration `protobuf:"bytes,12,opt,name=drain_timeout,json=drainTimeout,stdduration" json:"drain_timeout,omitempty"`
+	DrainTimeout *time.Duration `protobuf:"bytes,12,opt,name=drain_timeout,json=drainTimeout,proto3,stdduration" json:"drain_timeout,omitempty"`
+	// The delayed close timeout is for downstream connections managed by the HTTP connection manager.
+	// It is defined as a grace period after connection close processing has been locally initiated
+	// during which Envoy will flush the write buffers for the connection and await the peer to close
+	// (i.e., a TCP FIN/RST is received by Envoy from the downstream connection).
+	//
+	// Delaying Envoy's connection close and giving the peer the opportunity to initate the close
+	// sequence mitigates a race condition that exists when downstream clients do not drain/process
+	// data in a connection's receive buffer after a remote close has been detected via a socket
+	// write(). This race leads to such clients failing to process the response code sent by Envoy,
+	// which could result in erroneous downstream processing.
+	//
+	// If the timeout triggers, Envoy will close the connection's socket.
+	//
+	// The default timeout is 1000 ms if this option is not specified.
+	//
+	// A value of 0 will completely disable delayed close processing, and the downstream connection's
+	// socket will be closed immediately after the write flush is completed.
+	DelayedCloseTimeout *time.Duration `protobuf:"bytes,26,opt,name=delayed_close_timeout,json=delayedCloseTimeout,proto3,stdduration" json:"delayed_close_timeout,omitempty"`
 	// Configuration for :ref:`HTTP access logs <arch_overview_access_logs>`
 	// emitted by the connection manager.
-	AccessLog []*v21.AccessLog `protobuf:"bytes,13,rep,name=access_log,json=accessLog" json:"access_log,omitempty"`
+	AccessLog []*v21.AccessLog `protobuf:"bytes,13,rep,name=access_log,json=accessLog,proto3" json:"access_log,omitempty"`
 	// If set to true, the connection manager will use the real remote address
 	// of the client connection when determining internal versus external origin and manipulating
 	// various headers. If set to false or absent, the connection manager will use the
@@ -220,18 +243,18 @@ type HttpConnectionManager struct {
 	// :ref:`config_http_conn_man_headers_x-forwarded-for`,
 	// :ref:`config_http_conn_man_headers_x-envoy-internal`, and
 	// :ref:`config_http_conn_man_headers_x-envoy-external-address` for more information.
-	UseRemoteAddress *types.BoolValue `protobuf:"bytes,14,opt,name=use_remote_address,json=useRemoteAddress" json:"use_remote_address,omitempty"`
+	UseRemoteAddress *types.BoolValue `protobuf:"bytes,14,opt,name=use_remote_address,json=useRemoteAddress,proto3" json:"use_remote_address,omitempty"`
 	// The number of additional ingress proxy hops from the right side of the
 	// :ref:`config_http_conn_man_headers_x-forwarded-for` HTTP header to trust when
 	// determining the origin client's IP address. The default is zero if this option
 	// is not specified. See the documentation for
 	// :ref:`config_http_conn_man_headers_x-forwarded-for` for more information.
 	XffNumTrustedHops uint32 `protobuf:"varint,19,opt,name=xff_num_trusted_hops,json=xffNumTrustedHops,proto3" json:"xff_num_trusted_hops,omitempty"`
-	// Configures what network addresses are considered internal for stats and header sanitazion
+	// Configures what network addresses are considered internal for stats and header sanitation
 	// purposes. If unspecified, only RFC1918 IP addresses will be considered internal.
 	// See the documentation for :ref:`config_http_conn_man_headers_x-envoy-internal` for more
 	// information about internal/external addresses.
-	InternalAddressConfig *HttpConnectionManager_InternalAddressConfig `protobuf:"bytes,25,opt,name=internal_address_config,json=internalAddressConfig" json:"internal_address_config,omitempty"`
+	InternalAddressConfig *HttpConnectionManager_InternalAddressConfig `protobuf:"bytes,25,opt,name=internal_address_config,json=internalAddressConfig,proto3" json:"internal_address_config,omitempty"`
 	// If set, Envoy will not append the remote address to the
 	// :ref:`config_http_conn_man_headers_x-forwarded-for` HTTP header. This may be used in
 	// conjunction with HTTP filters that explicitly manipulate XFF after the HTTP connection manager
@@ -248,7 +271,7 @@ type HttpConnectionManager struct {
 	// <config_http_conn_man_headers_x-request-id>` header if it does not exist. This defaults to
 	// true. Generating a random UUID4 is expensive so in high throughput scenarios where this feature
 	// is not desired it can be disabled.
-	GenerateRequestId *types.BoolValue `protobuf:"bytes,15,opt,name=generate_request_id,json=generateRequestId" json:"generate_request_id,omitempty"`
+	GenerateRequestId *types.BoolValue `protobuf:"bytes,15,opt,name=generate_request_id,json=generateRequestId,proto3" json:"generate_request_id,omitempty"`
 	// How to handle the :ref:`config_http_conn_man_headers_x-forwarded-client-cert` (XFCC) HTTP
 	// header.
 	ForwardClientCertDetails HttpConnectionManager_ForwardClientCertDetails `protobuf:"varint,16,opt,name=forward_client_cert_details,json=forwardClientCertDetails,proto3,enum=envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager_ForwardClientCertDetails" json:"forward_client_cert_details,omitempty"`
@@ -259,7 +282,7 @@ type HttpConnectionManager struct {
 	// :ref:`config_http_conn_man_headers_x-forwarded-client-cert` header, *Hash* is always set, and
 	// *By* is always set when the client certificate presents the URI type Subject Alternative Name
 	// value.
-	SetCurrentClientCertDetails *HttpConnectionManager_SetCurrentClientCertDetails `protobuf:"bytes,17,opt,name=set_current_client_cert_details,json=setCurrentClientCertDetails" json:"set_current_client_cert_details,omitempty"`
+	SetCurrentClientCertDetails *HttpConnectionManager_SetCurrentClientCertDetails `protobuf:"bytes,17,opt,name=set_current_client_cert_details,json=setCurrentClientCertDetails,proto3" json:"set_current_client_cert_details,omitempty"`
 	// If proxy_100_continue is true, Envoy will proxy incoming "Expect:
 	// 100-continue" headers upstream, and forward "100 Continue" responses
 	// downstream. If this is false or not set, Envoy will instead strip the
@@ -278,17 +301,25 @@ type HttpConnectionManager struct {
 	// <config_http_conn_man_runtime_represent_ipv4_remote_address_as_ipv4_mapped_ipv6>` for runtime
 	// control.
 	RepresentIpv4RemoteAddressAsIpv4MappedIpv6 bool                                   `protobuf:"varint,20,opt,name=represent_ipv4_remote_address_as_ipv4_mapped_ipv6,json=representIpv4RemoteAddressAsIpv4MappedIpv6,proto3" json:"represent_ipv4_remote_address_as_ipv4_mapped_ipv6,omitempty"`
-	UpgradeConfigs                             []*HttpConnectionManager_UpgradeConfig `protobuf:"bytes,23,rep,name=upgrade_configs,json=upgradeConfigs" json:"upgrade_configs,omitempty"`
-	XXX_NoUnkeyedLiteral                       struct{}                               `json:"-"`
-	XXX_unrecognized                           []byte                                 `json:"-"`
-	XXX_sizecache                              int32                                  `json:"-"`
+	UpgradeConfigs                             []*HttpConnectionManager_UpgradeConfig `protobuf:"bytes,23,rep,name=upgrade_configs,json=upgradeConfigs,proto3" json:"upgrade_configs,omitempty"`
+	// If true, the order of encoder filters will be reversed to that of filters
+	// configured in the HTTP filter chain. Otherwise, it will keep the existing
+	// order.
+	// Note: this is a bug fix for Envoy, which is designed to have the reversed
+	// order of encode filters to that of decode ones, (see
+	// https://github.com/envoyproxy/envoy/issues/4599 for details). When we remove this field, envoy
+	// will have the same behavior when it sets true.
+	BugfixReverseEncodeOrder *types.BoolValue `protobuf:"bytes,27,opt,name=bugfix_reverse_encode_order,json=bugfixReverseEncodeOrder,proto3" json:"bugfix_reverse_encode_order,omitempty"` // Deprecated: Do not use.
+	XXX_NoUnkeyedLiteral     struct{}         `json:"-"`
+	XXX_unrecognized         []byte           `json:"-"`
+	XXX_sizecache            int32            `json:"-"`
 }
 
 func (m *HttpConnectionManager) Reset()         { *m = HttpConnectionManager{} }
 func (m *HttpConnectionManager) String() string { return proto.CompactTextString(m) }
 func (*HttpConnectionManager) ProtoMessage()    {}
 func (*HttpConnectionManager) Descriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{0}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{0}
 }
 func (m *HttpConnectionManager) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -324,10 +355,10 @@ type isHttpConnectionManager_RouteSpecifier interface {
 }
 
 type HttpConnectionManager_Rds struct {
-	Rds *Rds `protobuf:"bytes,3,opt,name=rds,oneof"`
+	Rds *Rds `protobuf:"bytes,3,opt,name=rds,proto3,oneof"`
 }
 type HttpConnectionManager_RouteConfig struct {
-	RouteConfig *v2.RouteConfiguration `protobuf:"bytes,4,opt,name=route_config,json=routeConfig,oneof"`
+	RouteConfig *v2.RouteConfiguration `protobuf:"bytes,4,opt,name=route_config,json=routeConfig,proto3,oneof"`
 }
 
 func (*HttpConnectionManager_Rds) isHttpConnectionManager_RouteSpecifier()         {}
@@ -424,9 +455,23 @@ func (m *HttpConnectionManager) GetStreamIdleTimeout() *time.Duration {
 	return nil
 }
 
+func (m *HttpConnectionManager) GetRequestTimeout() *time.Duration {
+	if m != nil {
+		return m.RequestTimeout
+	}
+	return nil
+}
+
 func (m *HttpConnectionManager) GetDrainTimeout() *time.Duration {
 	if m != nil {
 		return m.DrainTimeout
+	}
+	return nil
+}
+
+func (m *HttpConnectionManager) GetDelayedCloseTimeout() *time.Duration {
+	if m != nil {
+		return m.DelayedCloseTimeout
 	}
 	return nil
 }
@@ -515,6 +560,14 @@ func (m *HttpConnectionManager) GetUpgradeConfigs() []*HttpConnectionManager_Upg
 	return nil
 }
 
+// Deprecated: Do not use.
+func (m *HttpConnectionManager) GetBugfixReverseEncodeOrder() *types.BoolValue {
+	if m != nil {
+		return m.BugfixReverseEncodeOrder
+	}
+	return nil
+}
+
 // XXX_OneofFuncs is for the internal use of the proto package.
 func (*HttpConnectionManager) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
 	return _HttpConnectionManager_OneofMarshaler, _HttpConnectionManager_OneofUnmarshaler, _HttpConnectionManager_OneofSizer, []interface{}{
@@ -595,20 +648,20 @@ type HttpConnectionManager_Tracing struct {
 	// A list of header names used to create tags for the active span. The header name is used to
 	// populate the tag name, and the header value is used to populate the tag value. The tag is
 	// created if the specified header name is present in the request's headers.
-	RequestHeadersForTags []string `protobuf:"bytes,2,rep,name=request_headers_for_tags,json=requestHeadersForTags" json:"request_headers_for_tags,omitempty"`
+	RequestHeadersForTags []string `protobuf:"bytes,2,rep,name=request_headers_for_tags,json=requestHeadersForTags,proto3" json:"request_headers_for_tags,omitempty"`
 	// Target percentage of requests managed by this HTTP connection manager that will be force
 	// traced if the :ref:`x-client-trace-id <config_http_conn_man_headers_x-client-trace-id>`
 	// header is set. This field is a direct analog for the runtime variable
 	// 'tracing.client_sampling' in the :ref:`HTTP Connection Manager
 	// <config_http_conn_man_runtime>`.
 	// Default: 100%
-	ClientSampling *_type.Percent `protobuf:"bytes,3,opt,name=client_sampling,json=clientSampling" json:"client_sampling,omitempty"`
+	ClientSampling *_type.Percent `protobuf:"bytes,3,opt,name=client_sampling,json=clientSampling,proto3" json:"client_sampling,omitempty"`
 	// Target percentage of requests managed by this HTTP connection manager that will be randomly
 	// selected for trace generation, if not requested by the client or not forced. This field is
 	// a direct analog for the runtime variable 'tracing.random_sampling' in the
 	// :ref:`HTTP Connection Manager <config_http_conn_man_runtime>`.
 	// Default: 100%
-	RandomSampling *_type.Percent `protobuf:"bytes,4,opt,name=random_sampling,json=randomSampling" json:"random_sampling,omitempty"`
+	RandomSampling *_type.Percent `protobuf:"bytes,4,opt,name=random_sampling,json=randomSampling,proto3" json:"random_sampling,omitempty"`
 	// Target percentage of requests managed by this HTTP connection manager that will be traced
 	// after all other sampling checks have been applied (client-directed, force tracing, random
 	// sampling). This field functions as an upper limit on the total configured sampling rate. For
@@ -617,7 +670,7 @@ type HttpConnectionManager_Tracing struct {
 	// analog for the runtime variable 'tracing.global_enabled' in the
 	// :ref:`HTTP Connection Manager <config_http_conn_man_runtime>`.
 	// Default: 100%
-	OverallSampling      *_type.Percent `protobuf:"bytes,5,opt,name=overall_sampling,json=overallSampling" json:"overall_sampling,omitempty"`
+	OverallSampling      *_type.Percent `protobuf:"bytes,5,opt,name=overall_sampling,json=overallSampling,proto3" json:"overall_sampling,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
 	XXX_unrecognized     []byte         `json:"-"`
 	XXX_sizecache        int32          `json:"-"`
@@ -627,7 +680,7 @@ func (m *HttpConnectionManager_Tracing) Reset()         { *m = HttpConnectionMan
 func (m *HttpConnectionManager_Tracing) String() string { return proto.CompactTextString(m) }
 func (*HttpConnectionManager_Tracing) ProtoMessage()    {}
 func (*HttpConnectionManager_Tracing) Descriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{0, 0}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{0, 0}
 }
 func (m *HttpConnectionManager_Tracing) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -707,7 +760,7 @@ func (m *HttpConnectionManager_InternalAddressConfig) String() string {
 }
 func (*HttpConnectionManager_InternalAddressConfig) ProtoMessage() {}
 func (*HttpConnectionManager_InternalAddressConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{0, 1}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{0, 1}
 }
 func (m *HttpConnectionManager_InternalAddressConfig) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -745,7 +798,7 @@ func (m *HttpConnectionManager_InternalAddressConfig) GetUnixSockets() bool {
 
 type HttpConnectionManager_SetCurrentClientCertDetails struct {
 	// Whether to forward the subject of the client cert. Defaults to false.
-	Subject *types.BoolValue `protobuf:"bytes,1,opt,name=subject" json:"subject,omitempty"`
+	Subject *types.BoolValue `protobuf:"bytes,1,opt,name=subject,proto3" json:"subject,omitempty"`
 	// Whether to forward the entire client cert in URL encoded PEM format. This will appear in the
 	// XFCC header comma separated from other values with the value Cert="PEM".
 	// Defaults to false.
@@ -769,7 +822,7 @@ func (m *HttpConnectionManager_SetCurrentClientCertDetails) String() string {
 }
 func (*HttpConnectionManager_SetCurrentClientCertDetails) ProtoMessage() {}
 func (*HttpConnectionManager_SetCurrentClientCertDetails) Descriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{0, 2}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{0, 2}
 }
 func (m *HttpConnectionManager_SetCurrentClientCertDetails) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -847,17 +900,22 @@ type HttpConnectionManager_UpgradeConfig struct {
 	// If present, this represents the filter chain which will be created for
 	// this type of upgrade. If no filters are present, the filter chain for
 	// HTTP connections will be used for this upgrade type.
-	Filters              []*HttpFilter `protobuf:"bytes,2,rep,name=filters" json:"filters,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
+	Filters []*HttpFilter `protobuf:"bytes,2,rep,name=filters,proto3" json:"filters,omitempty"`
+	// Determines if upgrades are enabled or disabled by default. Defaults to true.
+	// This can be overriden on a per-route basis with :ref:`cluster
+	// <envoy_api_field_route.RouteAction.upgrade_configs>` as documented in the
+	// :ref:`upgrade documentation <arch_overview_websocket>`.
+	Enabled              *types.BoolValue `protobuf:"bytes,3,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
 }
 
 func (m *HttpConnectionManager_UpgradeConfig) Reset()         { *m = HttpConnectionManager_UpgradeConfig{} }
 func (m *HttpConnectionManager_UpgradeConfig) String() string { return proto.CompactTextString(m) }
 func (*HttpConnectionManager_UpgradeConfig) ProtoMessage()    {}
 func (*HttpConnectionManager_UpgradeConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{0, 3}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{0, 3}
 }
 func (m *HttpConnectionManager_UpgradeConfig) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -900,9 +958,16 @@ func (m *HttpConnectionManager_UpgradeConfig) GetFilters() []*HttpFilter {
 	return nil
 }
 
+func (m *HttpConnectionManager_UpgradeConfig) GetEnabled() *types.BoolValue {
+	if m != nil {
+		return m.Enabled
+	}
+	return nil
+}
+
 type Rds struct {
 	// Configuration source specifier for RDS.
-	ConfigSource core.ConfigSource `protobuf:"bytes,1,opt,name=config_source,json=configSource" json:"config_source"`
+	ConfigSource core.ConfigSource `protobuf:"bytes,1,opt,name=config_source,json=configSource,proto3" json:"config_source"`
 	// The name of the route configuration. This name will be passed to the RDS
 	// API. This allows an Envoy configuration with multiple HTTP listeners (and
 	// associated HTTP connection manager filters) to use different route
@@ -917,7 +982,7 @@ func (m *Rds) Reset()         { *m = Rds{} }
 func (m *Rds) String() string { return proto.CompactTextString(m) }
 func (*Rds) ProtoMessage()    {}
 func (*Rds) Descriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{1}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{1}
 }
 func (m *Rds) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -981,22 +1046,23 @@ type HttpFilter struct {
 	// * :ref:`envoy.router <config_http_filters_router>`
 	// * :ref:`envoy.squash <config_http_filters_squash>`
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Filter specific configuration which depends on the filter being
-	// instantiated. See the supported filters for further documentation.
-	Config *types.Struct `protobuf:"bytes,2,opt,name=config" json:"config,omitempty"`
-	// [#not-implemented-hide:]
-	// This is hidden as type has been deprecated and is no longer required.
-	DeprecatedV1         *HttpFilter_DeprecatedV1 `protobuf:"bytes,3,opt,name=deprecated_v1,json=deprecatedV1" json:"deprecated_v1,omitempty"` // Deprecated: Do not use.
-	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
-	XXX_unrecognized     []byte                   `json:"-"`
-	XXX_sizecache        int32                    `json:"-"`
+	// Filter specific configuration which depends on the filter being instantiated. See the supported
+	// filters for further documentation.
+	//
+	// Types that are valid to be assigned to ConfigType:
+	//	*HttpFilter_Config
+	//	*HttpFilter_TypedConfig
+	ConfigType           isHttpFilter_ConfigType `protobuf_oneof:"config_type"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
 }
 
 func (m *HttpFilter) Reset()         { *m = HttpFilter{} }
 func (m *HttpFilter) String() string { return proto.CompactTextString(m) }
 func (*HttpFilter) ProtoMessage()    {}
 func (*HttpFilter) Descriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{2}
+	return fileDescriptor_http_connection_manager_7cbc976203d94103, []int{2}
 }
 func (m *HttpFilter) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1025,6 +1091,29 @@ func (m *HttpFilter) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_HttpFilter proto.InternalMessageInfo
 
+type isHttpFilter_ConfigType interface {
+	isHttpFilter_ConfigType()
+	MarshalTo([]byte) (int, error)
+	Size() int
+}
+
+type HttpFilter_Config struct {
+	Config *types.Struct `protobuf:"bytes,2,opt,name=config,proto3,oneof"`
+}
+type HttpFilter_TypedConfig struct {
+	TypedConfig *types.Any `protobuf:"bytes,4,opt,name=typed_config,json=typedConfig,proto3,oneof"`
+}
+
+func (*HttpFilter_Config) isHttpFilter_ConfigType()      {}
+func (*HttpFilter_TypedConfig) isHttpFilter_ConfigType() {}
+
+func (m *HttpFilter) GetConfigType() isHttpFilter_ConfigType {
+	if m != nil {
+		return m.ConfigType
+	}
+	return nil
+}
+
 func (m *HttpFilter) GetName() string {
 	if m != nil {
 		return m.Name
@@ -1033,67 +1122,91 @@ func (m *HttpFilter) GetName() string {
 }
 
 func (m *HttpFilter) GetConfig() *types.Struct {
-	if m != nil {
-		return m.Config
+	if x, ok := m.GetConfigType().(*HttpFilter_Config); ok {
+		return x.Config
 	}
 	return nil
 }
 
-// Deprecated: Do not use.
-func (m *HttpFilter) GetDeprecatedV1() *HttpFilter_DeprecatedV1 {
-	if m != nil {
-		return m.DeprecatedV1
+func (m *HttpFilter) GetTypedConfig() *types.Any {
+	if x, ok := m.GetConfigType().(*HttpFilter_TypedConfig); ok {
+		return x.TypedConfig
 	}
 	return nil
 }
 
-// [#not-implemented-hide:]
-// This is hidden as type has been deprecated and is no longer required.
-type HttpFilter_DeprecatedV1 struct {
-	Type                 string   `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*HttpFilter) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _HttpFilter_OneofMarshaler, _HttpFilter_OneofUnmarshaler, _HttpFilter_OneofSizer, []interface{}{
+		(*HttpFilter_Config)(nil),
+		(*HttpFilter_TypedConfig)(nil),
+	}
 }
 
-func (m *HttpFilter_DeprecatedV1) Reset()         { *m = HttpFilter_DeprecatedV1{} }
-func (m *HttpFilter_DeprecatedV1) String() string { return proto.CompactTextString(m) }
-func (*HttpFilter_DeprecatedV1) ProtoMessage()    {}
-func (*HttpFilter_DeprecatedV1) Descriptor() ([]byte, []int) {
-	return fileDescriptor_http_connection_manager_3cc9513760a24ec8, []int{2, 0}
-}
-func (m *HttpFilter_DeprecatedV1) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *HttpFilter_DeprecatedV1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_HttpFilter_DeprecatedV1.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
+func _HttpFilter_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*HttpFilter)
+	// config_type
+	switch x := m.ConfigType.(type) {
+	case *HttpFilter_Config:
+		_ = b.EncodeVarint(2<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Config); err != nil {
+			return err
 		}
-		return b[:n], nil
+	case *HttpFilter_TypedConfig:
+		_ = b.EncodeVarint(4<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.TypedConfig); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("HttpFilter.ConfigType has unexpected type %T", x)
 	}
-}
-func (dst *HttpFilter_DeprecatedV1) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HttpFilter_DeprecatedV1.Merge(dst, src)
-}
-func (m *HttpFilter_DeprecatedV1) XXX_Size() int {
-	return m.Size()
-}
-func (m *HttpFilter_DeprecatedV1) XXX_DiscardUnknown() {
-	xxx_messageInfo_HttpFilter_DeprecatedV1.DiscardUnknown(m)
+	return nil
 }
 
-var xxx_messageInfo_HttpFilter_DeprecatedV1 proto.InternalMessageInfo
-
-func (m *HttpFilter_DeprecatedV1) GetType() string {
-	if m != nil {
-		return m.Type
+func _HttpFilter_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*HttpFilter)
+	switch tag {
+	case 2: // config_type.config
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(types.Struct)
+		err := b.DecodeMessage(msg)
+		m.ConfigType = &HttpFilter_Config{msg}
+		return true, err
+	case 4: // config_type.typed_config
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(types.Any)
+		err := b.DecodeMessage(msg)
+		m.ConfigType = &HttpFilter_TypedConfig{msg}
+		return true, err
+	default:
+		return false, nil
 	}
-	return ""
+}
+
+func _HttpFilter_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*HttpFilter)
+	// config_type
+	switch x := m.ConfigType.(type) {
+	case *HttpFilter_Config:
+		s := proto.Size(x.Config)
+		n += 1 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *HttpFilter_TypedConfig:
+		s := proto.Size(x.TypedConfig)
+		n += 1 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
 }
 
 func init() {
@@ -1104,7 +1217,6 @@ func init() {
 	proto.RegisterType((*HttpConnectionManager_UpgradeConfig)(nil), "envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig")
 	proto.RegisterType((*Rds)(nil), "envoy.config.filter.network.http_connection_manager.v2.Rds")
 	proto.RegisterType((*HttpFilter)(nil), "envoy.config.filter.network.http_connection_manager.v2.HttpFilter")
-	proto.RegisterType((*HttpFilter_DeprecatedV1)(nil), "envoy.config.filter.network.http_connection_manager.v2.HttpFilter.DeprecatedV1")
 	proto.RegisterEnum("envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager_CodecType", HttpConnectionManager_CodecType_name, HttpConnectionManager_CodecType_value)
 	proto.RegisterEnum("envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager_ForwardClientCertDetails", HttpConnectionManager_ForwardClientCertDetails_name, HttpConnectionManager_ForwardClientCertDetails_value)
 	proto.RegisterEnum("envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager_Tracing_OperationName", HttpConnectionManager_Tracing_OperationName_name, HttpConnectionManager_Tracing_OperationName_value)
@@ -1360,6 +1472,42 @@ func (m *HttpConnectionManager) MarshalTo(dAtA []byte) (int, error) {
 		}
 		i += n12
 	}
+	if m.DelayedCloseTimeout != nil {
+		dAtA[i] = 0xd2
+		i++
+		dAtA[i] = 0x1
+		i++
+		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdDuration(*m.DelayedCloseTimeout)))
+		n13, err := github_com_gogo_protobuf_types.StdDurationMarshalTo(*m.DelayedCloseTimeout, dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n13
+	}
+	if m.BugfixReverseEncodeOrder != nil {
+		dAtA[i] = 0xda
+		i++
+		dAtA[i] = 0x1
+		i++
+		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.BugfixReverseEncodeOrder.Size()))
+		n14, err := m.BugfixReverseEncodeOrder.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n14
+	}
+	if m.RequestTimeout != nil {
+		dAtA[i] = 0xe2
+		i++
+		dAtA[i] = 0x1
+		i++
+		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdDuration(*m.RequestTimeout)))
+		n15, err := github_com_gogo_protobuf_types.StdDurationMarshalTo(*m.RequestTimeout, dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n15
+	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
 	}
@@ -1372,11 +1520,11 @@ func (m *HttpConnectionManager_Rds) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x1a
 		i++
 		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.Rds.Size()))
-		n13, err := m.Rds.MarshalTo(dAtA[i:])
+		n16, err := m.Rds.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n13
+		i += n16
 	}
 	return i, nil
 }
@@ -1386,11 +1534,11 @@ func (m *HttpConnectionManager_RouteConfig) MarshalTo(dAtA []byte) (int, error) 
 		dAtA[i] = 0x22
 		i++
 		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.RouteConfig.Size()))
-		n14, err := m.RouteConfig.MarshalTo(dAtA[i:])
+		n17, err := m.RouteConfig.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n14
+		i += n17
 	}
 	return i, nil
 }
@@ -1433,31 +1581,31 @@ func (m *HttpConnectionManager_Tracing) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x1a
 		i++
 		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.ClientSampling.Size()))
-		n15, err := m.ClientSampling.MarshalTo(dAtA[i:])
+		n18, err := m.ClientSampling.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n15
+		i += n18
 	}
 	if m.RandomSampling != nil {
 		dAtA[i] = 0x22
 		i++
 		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.RandomSampling.Size()))
-		n16, err := m.RandomSampling.MarshalTo(dAtA[i:])
+		n19, err := m.RandomSampling.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n16
+		i += n19
 	}
 	if m.OverallSampling != nil {
 		dAtA[i] = 0x2a
 		i++
 		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.OverallSampling.Size()))
-		n17, err := m.OverallSampling.MarshalTo(dAtA[i:])
+		n20, err := m.OverallSampling.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n17
+		i += n20
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -1515,11 +1663,11 @@ func (m *HttpConnectionManager_SetCurrentClientCertDetails) MarshalTo(dAtA []byt
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.Subject.Size()))
-		n18, err := m.Subject.MarshalTo(dAtA[i:])
+		n21, err := m.Subject.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n18
+		i += n21
 	}
 	if m.Cert {
 		dAtA[i] = 0x18
@@ -1590,6 +1738,16 @@ func (m *HttpConnectionManager_UpgradeConfig) MarshalTo(dAtA []byte) (int, error
 			i += n
 		}
 	}
+	if m.Enabled != nil {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.Enabled.Size()))
+		n22, err := m.Enabled.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n22
+	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
 	}
@@ -1614,11 +1772,11 @@ func (m *Rds) MarshalTo(dAtA []byte) (int, error) {
 	dAtA[i] = 0xa
 	i++
 	i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.ConfigSource.Size()))
-	n19, err := m.ConfigSource.MarshalTo(dAtA[i:])
+	n23, err := m.ConfigSource.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
-	i += n19
+	i += n23
 	if len(m.RouteConfigName) > 0 {
 		dAtA[i] = 0x12
 		i++
@@ -1652,59 +1810,47 @@ func (m *HttpFilter) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
 	}
+	if m.ConfigType != nil {
+		nn24, err := m.ConfigType.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += nn24
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *HttpFilter_Config) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
 	if m.Config != nil {
 		dAtA[i] = 0x12
 		i++
 		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.Config.Size()))
-		n20, err := m.Config.MarshalTo(dAtA[i:])
+		n25, err := m.Config.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n20
+		i += n25
 	}
-	if m.DeprecatedV1 != nil {
-		dAtA[i] = 0x1a
+	return i, nil
+}
+func (m *HttpFilter_TypedConfig) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.TypedConfig != nil {
+		dAtA[i] = 0x22
 		i++
-		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.DeprecatedV1.Size()))
-		n21, err := m.DeprecatedV1.MarshalTo(dAtA[i:])
+		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(m.TypedConfig.Size()))
+		n26, err := m.TypedConfig.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n21
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i += n26
 	}
 	return i, nil
 }
-
-func (m *HttpFilter_DeprecatedV1) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *HttpFilter_DeprecatedV1) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if len(m.Type) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintHttpConnectionManager(dAtA, i, uint64(len(m.Type)))
-		i += copy(dAtA[i:], m.Type)
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
-}
-
 func encodeVarintHttpConnectionManager(dAtA []byte, offset int, v uint64) int {
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
@@ -1715,6 +1861,9 @@ func encodeVarintHttpConnectionManager(dAtA []byte, offset int, v uint64) int {
 	return offset + 1
 }
 func (m *HttpConnectionManager) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.CodecType != 0 {
@@ -1812,6 +1961,18 @@ func (m *HttpConnectionManager) Size() (n int) {
 		l = m.InternalAddressConfig.Size()
 		n += 2 + l + sovHttpConnectionManager(uint64(l))
 	}
+	if m.DelayedCloseTimeout != nil {
+		l = github_com_gogo_protobuf_types.SizeOfStdDuration(*m.DelayedCloseTimeout)
+		n += 2 + l + sovHttpConnectionManager(uint64(l))
+	}
+	if m.BugfixReverseEncodeOrder != nil {
+		l = m.BugfixReverseEncodeOrder.Size()
+		n += 2 + l + sovHttpConnectionManager(uint64(l))
+	}
+	if m.RequestTimeout != nil {
+		l = github_com_gogo_protobuf_types.SizeOfStdDuration(*m.RequestTimeout)
+		n += 2 + l + sovHttpConnectionManager(uint64(l))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -1819,6 +1980,9 @@ func (m *HttpConnectionManager) Size() (n int) {
 }
 
 func (m *HttpConnectionManager_Rds) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.Rds != nil {
@@ -1828,6 +1992,9 @@ func (m *HttpConnectionManager_Rds) Size() (n int) {
 	return n
 }
 func (m *HttpConnectionManager_RouteConfig) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.RouteConfig != nil {
@@ -1837,6 +2004,9 @@ func (m *HttpConnectionManager_RouteConfig) Size() (n int) {
 	return n
 }
 func (m *HttpConnectionManager_Tracing) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.OperationName != 0 {
@@ -1867,6 +2037,9 @@ func (m *HttpConnectionManager_Tracing) Size() (n int) {
 }
 
 func (m *HttpConnectionManager_InternalAddressConfig) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.UnixSockets {
@@ -1879,6 +2052,9 @@ func (m *HttpConnectionManager_InternalAddressConfig) Size() (n int) {
 }
 
 func (m *HttpConnectionManager_SetCurrentClientCertDetails) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.Subject != nil {
@@ -1901,6 +2077,9 @@ func (m *HttpConnectionManager_SetCurrentClientCertDetails) Size() (n int) {
 }
 
 func (m *HttpConnectionManager_UpgradeConfig) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.UpgradeType)
@@ -1913,6 +2092,10 @@ func (m *HttpConnectionManager_UpgradeConfig) Size() (n int) {
 			n += 1 + l + sovHttpConnectionManager(uint64(l))
 		}
 	}
+	if m.Enabled != nil {
+		l = m.Enabled.Size()
+		n += 1 + l + sovHttpConnectionManager(uint64(l))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -1920,6 +2103,9 @@ func (m *HttpConnectionManager_UpgradeConfig) Size() (n int) {
 }
 
 func (m *Rds) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = m.ConfigSource.Size()
@@ -1935,19 +2121,17 @@ func (m *Rds) Size() (n int) {
 }
 
 func (m *HttpFilter) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovHttpConnectionManager(uint64(l))
 	}
-	if m.Config != nil {
-		l = m.Config.Size()
-		n += 1 + l + sovHttpConnectionManager(uint64(l))
-	}
-	if m.DeprecatedV1 != nil {
-		l = m.DeprecatedV1.Size()
-		n += 1 + l + sovHttpConnectionManager(uint64(l))
+	if m.ConfigType != nil {
+		n += m.ConfigType.Size()
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -1955,15 +2139,27 @@ func (m *HttpFilter) Size() (n int) {
 	return n
 }
 
-func (m *HttpFilter_DeprecatedV1) Size() (n int) {
+func (m *HttpFilter_Config) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
-	l = len(m.Type)
-	if l > 0 {
+	if m.Config != nil {
+		l = m.Config.Size()
 		n += 1 + l + sovHttpConnectionManager(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
+	return n
+}
+func (m *HttpFilter_TypedConfig) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.TypedConfig != nil {
+		l = m.TypedConfig.Size()
+		n += 1 + l + sovHttpConnectionManager(uint64(l))
 	}
 	return n
 }
@@ -2734,6 +2930,105 @@ func (m *HttpConnectionManager) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 26:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DelayedCloseTimeout", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpConnectionManager
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttpConnectionManager
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.DelayedCloseTimeout == nil {
+				m.DelayedCloseTimeout = new(time.Duration)
+			}
+			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(m.DelayedCloseTimeout, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 27:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BugfixReverseEncodeOrder", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpConnectionManager
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttpConnectionManager
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.BugfixReverseEncodeOrder == nil {
+				m.BugfixReverseEncodeOrder = &types.BoolValue{}
+			}
+			if err := m.BugfixReverseEncodeOrder.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 28:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RequestTimeout", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpConnectionManager
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttpConnectionManager
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.RequestTimeout == nil {
+				m.RequestTimeout = new(time.Duration)
+			}
+			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(m.RequestTimeout, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipHttpConnectionManager(dAtA[iNdEx:])
@@ -3258,6 +3553,39 @@ func (m *HttpConnectionManager_UpgradeConfig) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Enabled", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpConnectionManager
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttpConnectionManager
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Enabled == nil {
+				m.Enabled = &types.BoolValue{}
+			}
+			if err := m.Enabled.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipHttpConnectionManager(dAtA[iNdEx:])
@@ -3474,16 +3802,15 @@ func (m *HttpFilter) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Config == nil {
-				m.Config = &types.Struct{}
-			}
-			if err := m.Config.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			v := &types.Struct{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			m.ConfigType = &HttpFilter_Config{v}
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DeprecatedV1", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TypedConfig", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3507,92 +3834,11 @@ func (m *HttpFilter) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.DeprecatedV1 == nil {
-				m.DeprecatedV1 = &HttpFilter_DeprecatedV1{}
-			}
-			if err := m.DeprecatedV1.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			v := &types.Any{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipHttpConnectionManager(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthHttpConnectionManager
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *HttpFilter_DeprecatedV1) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowHttpConnectionManager
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: DeprecatedV1: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DeprecatedV1: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowHttpConnectionManager
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttpConnectionManager
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Type = string(dAtA[iNdEx:postIndex])
+			m.ConfigType = &HttpFilter_TypedConfig{v}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3722,109 +3968,115 @@ var (
 )
 
 func init() {
-	proto.RegisterFile("envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto", fileDescriptor_http_connection_manager_3cc9513760a24ec8)
+	proto.RegisterFile("envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto", fileDescriptor_http_connection_manager_7cbc976203d94103)
 }
 
-var fileDescriptor_http_connection_manager_3cc9513760a24ec8 = []byte{
-	// 1598 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0x41, 0x6f, 0x23, 0x49,
-	0x15, 0x4e, 0xdb, 0xce, 0xc4, 0x7e, 0xb6, 0x93, 0x4e, 0x65, 0x32, 0xe9, 0xf1, 0x40, 0x62, 0x22,
-	0x01, 0xd1, 0x82, 0xda, 0x89, 0x19, 0x06, 0x09, 0x10, 0xc2, 0x4e, 0x32, 0xc4, 0xa3, 0xd9, 0x38,
-	0x6a, 0x7b, 0x76, 0xd8, 0x5d, 0x50, 0xa9, 0xa6, 0xbb, 0xec, 0x34, 0x63, 0x77, 0x35, 0x55, 0xd5,
-	0x9e, 0xcc, 0x09, 0x69, 0xc5, 0x01, 0x71, 0x02, 0x0e, 0x08, 0xc1, 0x91, 0x1f, 0x80, 0xb8, 0x21,
-	0x4e, 0x7b, 0x63, 0x8f, 0xfc, 0x02, 0x40, 0x73, 0xdb, 0xbf, 0xc0, 0x09, 0x55, 0x55, 0xb7, 0x63,
-	0x4f, 0x9c, 0xd9, 0xd5, 0x4e, 0xb8, 0xbd, 0x7e, 0xef, 0x7d, 0xdf, 0x7b, 0x55, 0xf5, 0xea, 0xd5,
-	0x6b, 0xe8, 0xd3, 0x68, 0xc2, 0x5e, 0x36, 0x7c, 0x16, 0x0d, 0xc2, 0x61, 0x63, 0x10, 0x8e, 0x24,
-	0xe5, 0x8d, 0x88, 0xca, 0x17, 0x8c, 0x3f, 0x6f, 0x9c, 0x4b, 0x19, 0x63, 0x9f, 0x45, 0x11, 0xf5,
-	0x65, 0xc8, 0x22, 0x3c, 0x26, 0x11, 0x19, 0x52, 0xde, 0x98, 0x34, 0xaf, 0x33, 0xb9, 0x31, 0x67,
-	0x92, 0xa1, 0x07, 0x9a, 0xd5, 0x35, 0xac, 0xae, 0x61, 0x75, 0x53, 0x56, 0xf7, 0x3a, 0xe8, 0xa4,
-	0x59, 0xfb, 0xaa, 0xc9, 0x86, 0xc4, 0xa1, 0x8a, 0xe1, 0x33, 0x4e, 0xd3, 0xcc, 0xb0, 0x60, 0x09,
-	0xf7, 0xa9, 0xa1, 0xaf, 0xd5, 0xaf, 0xba, 0x69, 0x83, 0xcf, 0x46, 0xa9, 0xc7, 0x9d, 0x39, 0x0f,
-	0x1e, 0x88, 0x54, 0xbf, 0xbf, 0x68, 0xb9, 0xc4, 0xf7, 0xa9, 0x10, 0x23, 0x36, 0x54, 0xbe, 0xd3,
-	0x8f, 0x14, 0xe1, 0x18, 0x84, 0x7c, 0x19, 0xd3, 0x46, 0x4c, 0xb9, 0x4f, 0x23, 0x99, 0x5a, 0xb6,
-	0x87, 0x8c, 0x0d, 0x47, 0x69, 0xe8, 0x67, 0xc9, 0xa0, 0x11, 0x24, 0x9c, 0xa8, 0x15, 0xa5, 0xf6,
-	0x2f, 0xbd, 0x6e, 0x17, 0x92, 0x27, 0xfe, 0xb5, 0xe8, 0x17, 0x9c, 0xc4, 0x31, 0xe5, 0x59, 0xa6,
-	0x5b, 0x13, 0x32, 0x0a, 0x03, 0x22, 0x69, 0x23, 0x13, 0x52, 0xc3, 0xed, 0x21, 0x1b, 0x32, 0x2d,
-	0x36, 0x94, 0x64, 0xb4, 0xbb, 0x7f, 0xbc, 0x0b, 0x9b, 0x27, 0x52, 0xc6, 0x87, 0xd3, 0x7d, 0x7d,
-	0xd7, 0x6c, 0x2b, 0xfa, 0xc8, 0x02, 0xf0, 0x59, 0x40, 0x7d, 0xac, 0xd6, 0xe0, 0x58, 0x75, 0x6b,
-	0x6f, 0xb5, 0xf9, 0xd4, 0xfd, 0x62, 0x27, 0xe4, 0x2e, 0x8c, 0xe1, 0x1e, 0x2a, 0xfe, 0xfe, 0xcb,
-	0x98, 0xb6, 0xe1, 0xef, 0x9f, 0x7e, 0x9c, 0x5f, 0xfe, 0xc8, 0xca, 0xd9, 0x96, 0x57, 0xf2, 0x33,
-	0x35, 0x7a, 0x07, 0xca, 0x42, 0x12, 0x89, 0x63, 0x4e, 0x07, 0xe1, 0x85, 0x93, 0xab, 0x5b, 0x7b,
-	0xa5, 0x76, 0x49, 0xf9, 0x16, 0x78, 0xae, 0x6e, 0x79, 0xa0, 0xac, 0x67, 0xda, 0x88, 0xba, 0x90,
-	0xe7, 0x81, 0x70, 0xf2, 0x75, 0x6b, 0xaf, 0xdc, 0xfc, 0xde, 0x17, 0x4d, 0xd4, 0x0b, 0xc4, 0xc9,
-	0x92, 0xa7, 0x98, 0xd0, 0x31, 0x54, 0x38, 0x4b, 0x24, 0xc5, 0x86, 0xc4, 0x29, 0x68, 0xe6, 0x7a,
-	0xca, 0x4c, 0xe2, 0x50, 0xfb, 0x2b, 0x8f, 0x43, 0xed, 0x90, 0x1e, 0xe3, 0xc9, 0x92, 0x57, 0xe6,
-	0x97, 0x5a, 0x44, 0xa1, 0xa2, 0xe3, 0x99, 0x1c, 0x84, 0xb3, 0x5c, 0xcf, 0xef, 0x95, 0x9b, 0xed,
-	0xb7, 0xd9, 0xc9, 0x87, 0xda, 0xdb, 0x2b, 0x9f, 0x4f, 0x65, 0x81, 0x7e, 0x08, 0xab, 0x24, 0x08,
-	0x70, 0x22, 0x28, 0xc7, 0x64, 0x48, 0x23, 0xe9, 0xdc, 0xd2, 0xf9, 0xd6, 0x5c, 0x53, 0x31, 0x6e,
-	0x56, 0x31, 0x6e, 0x9b, 0xb1, 0xd1, 0x7b, 0x64, 0x94, 0x50, 0xaf, 0x42, 0x82, 0xe0, 0x89, 0xa0,
-	0xbc, 0xa5, 0xfc, 0x11, 0x83, 0x15, 0xc9, 0x89, 0x1f, 0x46, 0x43, 0x67, 0x45, 0x43, 0x9f, 0xdc,
-	0xec, 0x69, 0xf7, 0x0d, 0xb9, 0x97, 0x45, 0x41, 0x1f, 0xc2, 0xa6, 0x26, 0xc9, 0x2e, 0x21, 0x66,
-	0xb1, 0xf2, 0x17, 0x4e, 0x51, 0x87, 0xff, 0xfa, 0xfc, 0x4e, 0xab, 0xfb, 0xaa, 0x99, 0x0f, 0xce,
-	0x52, 0xff, 0xae, 0x71, 0xf7, 0x36, 0x14, 0xcb, 0x6b, 0x4a, 0xf4, 0x53, 0xb8, 0xa3, 0xd4, 0xcd,
-	0xab, 0xec, 0xa5, 0x37, 0xb2, 0x37, 0x5f, 0x67, 0xbf, 0x7d, 0xbe, 0x40, 0x8b, 0x76, 0xa0, 0x2c,
-	0x28, 0x9f, 0x50, 0x8e, 0x23, 0x32, 0xa6, 0x0e, 0xa8, 0xca, 0xf4, 0xc0, 0xa8, 0x4e, 0xc9, 0x98,
-	0xa2, 0x36, 0x54, 0xc2, 0x60, 0x44, 0xb1, 0x0c, 0xc7, 0x94, 0x25, 0xd2, 0x29, 0xeb, 0xa8, 0x77,
-	0xaf, 0x9c, 0xc6, 0x51, 0x5a, 0x36, 0xed, 0xc2, 0x1f, 0xfe, 0xbd, 0x63, 0x79, 0x65, 0x05, 0xea,
-	0x1b, 0x0c, 0x3a, 0x82, 0x6a, 0xc0, 0x49, 0x18, 0x4d, 0x49, 0x2a, 0x9f, 0x8f, 0xa4, 0xa2, 0x51,
-	0x19, 0xcb, 0x23, 0x00, 0xd3, 0x9d, 0xf0, 0x88, 0x0d, 0x9d, 0xaa, 0x2e, 0xbf, 0x6f, 0x2c, 0x3c,
-	0xda, 0xcb, 0x26, 0x36, 0x69, 0xba, 0x2d, 0xfd, 0xf1, 0x98, 0x0d, 0xbd, 0x12, 0xc9, 0x44, 0x74,
-	0x02, 0x28, 0x11, 0x14, 0x73, 0x3a, 0x66, 0x92, 0x62, 0x12, 0x04, 0x9c, 0x0a, 0xe1, 0xac, 0x7e,
-	0x66, 0xa5, 0xd9, 0x89, 0xa0, 0x9e, 0x06, 0xb5, 0x0c, 0x06, 0x3d, 0x82, 0x8d, 0x21, 0x8d, 0x28,
-	0x27, 0x52, 0xd1, 0xfd, 0x3c, 0xa1, 0x42, 0xe2, 0x30, 0x70, 0xd6, 0x3e, 0x93, 0x6a, 0x3d, 0x83,
-	0x79, 0x06, 0xd5, 0x09, 0xd0, 0x5f, 0x2d, 0xb8, 0x37, 0x60, 0xfc, 0x05, 0xe1, 0x01, 0xf6, 0x47,
-	0x21, 0x8d, 0x24, 0xf6, 0x29, 0x97, 0x38, 0xa0, 0x92, 0x84, 0x23, 0xe1, 0xd8, 0xba, 0x79, 0x0d,
-	0x6e, 0xb6, 0x9c, 0x1f, 0x9a, 0x80, 0x87, 0x3a, 0xde, 0x21, 0xe5, 0xf2, 0xc8, 0x44, 0x9b, 0xeb,
-	0x65, 0xce, 0xe0, 0x1a, 0x2f, 0xf4, 0x17, 0x0b, 0x76, 0x04, 0x95, 0xd8, 0x4f, 0x38, 0xd7, 0x09,
-	0x2f, 0xc8, 0x7b, 0x5d, 0x6f, 0x46, 0x78, 0xb3, 0x79, 0xf7, 0xa8, 0x3c, 0x34, 0x31, 0xaf, 0x24,
-	0xe5, 0xdd, 0x13, 0xd7, 0x1b, 0xd1, 0x37, 0x01, 0xc5, 0x9c, 0x5d, 0xbc, 0xc4, 0x07, 0xfb, 0xfb,
-	0x2a, 0xa2, 0x0c, 0xa3, 0x84, 0x3a, 0xa8, 0x6e, 0xed, 0x15, 0x3d, 0x5b, 0x5b, 0x0e, 0xf6, 0xf7,
-	0x0f, 0x53, 0x3d, 0x6a, 0xc0, 0xed, 0x8b, 0xc1, 0x00, 0x47, 0xc9, 0x18, 0x4b, 0x9e, 0x08, 0x49,
-	0x03, 0x7c, 0xce, 0x62, 0xe1, 0x6c, 0xd4, 0xad, 0xbd, 0xaa, 0xb7, 0x7e, 0x31, 0x18, 0x9c, 0x26,
-	0xe3, 0xbe, 0xb1, 0x9c, 0xb0, 0x58, 0x20, 0x0a, 0x07, 0x9c, 0xc6, 0x9c, 0x0a, 0xb5, 0x0d, 0x61,
-	0x3c, 0xb9, 0xff, 0x5a, 0x95, 0x61, 0x22, 0x8c, 0x7a, 0xac, 0x1e, 0xbc, 0x40, 0xc9, 0x0f, 0x9c,
-	0xdb, 0x3a, 0xfa, 0x3b, 0x53, 0x60, 0x27, 0x9e, 0xdc, 0x9f, 0xab, 0xb3, 0x96, 0x50, 0xaa, 0x77,
-	0x35, 0xa4, 0x13, 0x4f, 0x1e, 0xa0, 0xaf, 0xc1, 0x9a, 0x78, 0x1e, 0xc6, 0x58, 0x25, 0xa7, 0xb4,
-	0x51, 0xe0, 0x6c, 0x6a, 0x92, 0xaa, 0x52, 0xff, 0x78, 0x30, 0x68, 0x69, 0x25, 0xb2, 0x21, 0x3f,
-	0x09, 0x89, 0x73, 0x47, 0x5f, 0x6c, 0x25, 0xa2, 0x5f, 0x5a, 0xb0, 0x96, 0xc4, 0x43, 0x4e, 0x82,
-	0xec, 0x49, 0x10, 0xce, 0x96, 0xbe, 0x4d, 0x1f, 0xde, 0xec, 0x09, 0x3d, 0x31, 0x41, 0xcc, 0xfb,
-	0xe1, 0xad, 0x26, 0xb3, 0x9f, 0x02, 0x75, 0x61, 0x43, 0x48, 0x4e, 0xc9, 0x18, 0xcf, 0xf5, 0x17,
-	0xe7, 0xf3, 0xb5, 0x86, 0x75, 0x83, 0xed, 0xcc, 0x74, 0x99, 0x3f, 0x59, 0xb0, 0x15, 0x46, 0x92,
-	0xf2, 0x88, 0x8c, 0xa6, 0x9b, 0x9d, 0xbe, 0x79, 0x77, 0x35, 0xab, 0x7f, 0xb3, 0xeb, 0xeb, 0xa4,
-	0xc1, 0xd2, 0x23, 0x4a, 0xd7, 0xb9, 0x19, 0x2e, 0x52, 0xd7, 0xfe, 0x91, 0x87, 0x95, 0xf4, 0xe5,
-	0x40, 0xbf, 0xb7, 0x60, 0x95, 0xc5, 0xd4, 0x2c, 0xc8, 0x34, 0x5e, 0x33, 0x97, 0xf8, 0xff, 0x97,
-	0x97, 0xca, 0xed, 0x66, 0xb1, 0x54, 0x47, 0x9f, 0xbb, 0xd7, 0x55, 0x36, 0x6b, 0x42, 0xdf, 0x01,
-	0x27, 0xeb, 0x61, 0xe7, 0x94, 0x04, 0x94, 0x0b, 0x3c, 0x60, 0x1c, 0x4b, 0x32, 0x14, 0x4e, 0xae,
-	0x9e, 0xdf, 0x2b, 0x79, 0x9b, 0xa9, 0xfd, 0xc4, 0x98, 0x1f, 0x32, 0xde, 0x27, 0x43, 0x81, 0xbe,
-	0x0f, 0x6b, 0xe9, 0xc5, 0x17, 0x64, 0x1c, 0x8f, 0xd4, 0xdb, 0x6b, 0x06, 0x98, 0x8d, 0x74, 0x45,
-	0x6a, 0xf8, 0x72, 0xcf, 0xcc, 0x00, 0xe9, 0xad, 0x1a, 0xdf, 0x5e, 0xea, 0xaa, 0xd0, 0x9c, 0x44,
-	0x01, 0x1b, 0x5f, 0xa2, 0x0b, 0x6f, 0x40, 0x1b, 0xdf, 0x29, 0xfa, 0x07, 0x60, 0xb3, 0x09, 0xe5,
-	0x64, 0x34, 0xba, 0x84, 0x2f, 0x5f, 0x0f, 0x5f, 0x4b, 0x9d, 0x33, 0xfc, 0xae, 0x0b, 0xd5, 0xb9,
-	0x0d, 0x42, 0x65, 0x58, 0xe9, 0x9c, 0xfe, 0xc8, 0x3b, 0xee, 0xf5, 0xec, 0x25, 0x04, 0x70, 0xeb,
-	0xd8, 0xc8, 0x56, 0xad, 0xf0, 0xab, 0x3f, 0x6f, 0x2f, 0xd5, 0xbe, 0x0b, 0x9b, 0x0b, 0x4f, 0x1e,
-	0x7d, 0x05, 0x2a, 0x49, 0x14, 0x5e, 0x60, 0xc1, 0xfc, 0xe7, 0x54, 0x0a, 0x7d, 0xa6, 0x45, 0xaf,
-	0xac, 0x74, 0x3d, 0xa3, 0xaa, 0xfd, 0xd6, 0x82, 0x7b, 0x6f, 0x68, 0x5c, 0xe8, 0x3e, 0xac, 0x88,
-	0xe4, 0xd9, 0xcf, 0xa8, 0x2f, 0x35, 0xfa, 0xcd, 0x2f, 0x48, 0xe6, 0x8a, 0x10, 0x14, 0x54, 0xbf,
-	0xd5, 0x5b, 0x5e, 0xf4, 0xb4, 0xac, 0xee, 0x7d, 0x10, 0x09, 0xbd, 0x8f, 0x45, 0x4f, 0x89, 0x4a,
-	0x93, 0xf0, 0x50, 0x6f, 0x4d, 0xd1, 0x53, 0xe2, 0xa3, 0x42, 0x31, 0x67, 0xe7, 0x6b, 0xbf, 0xb1,
-	0xa0, 0x3a, 0x77, 0x55, 0xf5, 0x42, 0xd2, 0x06, 0x31, 0x1d, 0x9a, 0x4b, 0x5e, 0x39, 0xd5, 0xe9,
-	0x89, 0xf6, 0x27, 0xb0, 0x92, 0x0d, 0x82, 0xb9, 0x1b, 0x1b, 0x04, 0x33, 0xca, 0xdd, 0x03, 0x28,
-	0x4d, 0x67, 0x6a, 0x54, 0x84, 0x42, 0xeb, 0x49, 0xbf, 0x6b, 0x2f, 0xa1, 0x12, 0x2c, 0x9f, 0xf4,
-	0xfb, 0x67, 0x07, 0xb6, 0x95, 0x89, 0x4d, 0x3b, 0x67, 0x4e, 0x65, 0xf7, 0x17, 0xe0, 0x5c, 0xf7,
-	0x92, 0xa1, 0x0a, 0x14, 0x7b, 0xad, 0xd3, 0x4e, 0xbf, 0xf3, 0xc1, 0xb1, 0xbd, 0x84, 0x6c, 0xa8,
-	0x3c, 0xec, 0x7a, 0x4f, 0x5b, 0xde, 0x11, 0xee, 0x9e, 0x3e, 0x7e, 0xdf, 0xb6, 0x10, 0x82, 0xd5,
-	0xd6, 0xd9, 0xd9, 0xf1, 0xe9, 0x11, 0x4e, 0x0d, 0x76, 0x4e, 0x79, 0x65, 0x18, 0xdc, 0x3b, 0xee,
-	0xdb, 0x79, 0xb4, 0x05, 0x1b, 0xad, 0xc7, 0x4f, 0x5b, 0xef, 0xf7, 0xf0, 0x1c, 0xbc, 0x60, 0x12,
-	0x68, 0x3b, 0xb0, 0x66, 0xc6, 0x6c, 0x11, 0x53, 0x3f, 0x1c, 0x84, 0x94, 0xa3, 0xe5, 0xbf, 0x7d,
-	0xfa, 0x71, 0xde, 0xda, 0xfd, 0x9d, 0x05, 0x79, 0x2f, 0x10, 0xa8, 0x0f, 0xd5, 0xb9, 0xdf, 0xb9,
-	0xf4, 0x88, 0x77, 0x16, 0x4c, 0x70, 0xe6, 0x20, 0x7a, 0xda, 0xad, 0xbd, 0xfa, 0xc9, 0xbf, 0x76,
-	0x96, 0xf4, 0xa5, 0xfd, 0xb5, 0xbe, 0xb4, 0x15, 0x7f, 0xc6, 0x8a, 0xbe, 0x0d, 0xeb, 0xb3, 0xe3,
-	0xbd, 0x69, 0x27, 0x57, 0xfe, 0x30, 0xd6, 0x66, 0x46, 0x79, 0x55, 0xe4, 0xbb, 0xff, 0xb5, 0x00,
-	0x2e, 0xb7, 0x1e, 0x7d, 0x19, 0x0a, 0xd3, 0x3e, 0x34, 0x07, 0xd4, 0x6a, 0xd4, 0x80, 0x5b, 0x69,
-	0x27, 0xcd, 0xe9, 0x9c, 0xb7, 0xae, 0x94, 0x65, 0x4f, 0xff, 0xdd, 0x79, 0xa9, 0x1b, 0xba, 0x80,
-	0x6a, 0xa0, 0x1e, 0x33, 0x9f, 0xa8, 0x17, 0x73, 0x72, 0x90, 0xb6, 0x83, 0xee, 0xdb, 0x57, 0x89,
-	0x7b, 0x34, 0xe5, 0x7d, 0xef, 0xa0, 0x9d, 0x73, 0xd4, 0x98, 0x38, 0xa3, 0xa9, 0xed, 0x42, 0x65,
-	0xd6, 0x43, 0x5d, 0x8e, 0x99, 0x22, 0xd6, 0x72, 0xdb, 0xfe, 0xe4, 0xd5, 0xb6, 0xf5, 0xcf, 0x57,
-	0xdb, 0xd6, 0x7f, 0x5e, 0x6d, 0x5b, 0x1f, 0xe4, 0x26, 0xcd, 0x67, 0xb7, 0xf4, 0x42, 0xbe, 0xf5,
-	0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xab, 0x84, 0x2b, 0xba, 0x11, 0x10, 0x00, 0x00,
+var fileDescriptor_http_connection_manager_7cbc976203d94103 = []byte{
+	// 1690 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0xcd, 0x6f, 0x23, 0x49,
+	0x15, 0x4f, 0xdb, 0x9e, 0x89, 0xf3, 0xec, 0x24, 0x9d, 0x4a, 0x32, 0xe9, 0x71, 0x96, 0xc4, 0x44,
+	0x02, 0xa2, 0x05, 0xd9, 0x89, 0x19, 0x06, 0xf1, 0x21, 0x84, 0x9d, 0x64, 0x70, 0x46, 0xb3, 0x49,
+	0xd4, 0xf6, 0x30, 0xec, 0x2e, 0xab, 0x52, 0xa5, 0xbb, 0xec, 0x34, 0x63, 0x77, 0x35, 0x55, 0xd5,
+	0x9e, 0xe4, 0x84, 0xb4, 0xe2, 0x80, 0xb8, 0xc1, 0x01, 0x21, 0x71, 0xe4, 0x0e, 0xe2, 0x86, 0x38,
+	0xed, 0x09, 0xf6, 0x84, 0xf8, 0x0b, 0x00, 0xcd, 0x6d, 0xff, 0x0b, 0x54, 0x1f, 0xed, 0xc4, 0xf9,
+	0x9a, 0xd1, 0x92, 0xbd, 0x55, 0xbf, 0xf7, 0x7e, 0xbf, 0xf7, 0x51, 0xaf, 0x5f, 0x55, 0x41, 0x97,
+	0xc6, 0x23, 0x76, 0x56, 0x0f, 0x58, 0xdc, 0x8b, 0xfa, 0xf5, 0x5e, 0x34, 0x90, 0x94, 0xd7, 0x63,
+	0x2a, 0x5f, 0x31, 0xfe, 0xb2, 0x7e, 0x22, 0x65, 0x82, 0x03, 0x16, 0xc7, 0x34, 0x90, 0x11, 0x8b,
+	0xf1, 0x90, 0xc4, 0xa4, 0x4f, 0x79, 0x7d, 0xd4, 0xb8, 0x49, 0x55, 0x4b, 0x38, 0x93, 0x0c, 0x3d,
+	0xd6, 0xac, 0x35, 0xc3, 0x5a, 0x33, 0xac, 0x35, 0xcb, 0x5a, 0xbb, 0x09, 0x3a, 0x6a, 0x54, 0xbe,
+	0x62, 0xa2, 0x21, 0x49, 0xa4, 0x7c, 0x04, 0x8c, 0x53, 0x1b, 0x19, 0x16, 0x2c, 0xe5, 0x01, 0x35,
+	0xf4, 0x95, 0xea, 0x55, 0x33, 0xad, 0x08, 0xd8, 0xc0, 0x5a, 0x3c, 0x98, 0xb0, 0xe0, 0xa1, 0xb0,
+	0xf2, 0xad, 0xeb, 0xd2, 0x25, 0x41, 0x40, 0x85, 0x18, 0xb0, 0xbe, 0xb2, 0x1d, 0x7f, 0x58, 0x84,
+	0x67, 0x10, 0xf2, 0x2c, 0xa1, 0xf5, 0x84, 0xf2, 0x80, 0xc6, 0xd2, 0x6a, 0x1e, 0xf6, 0x19, 0xeb,
+	0x0f, 0xac, 0xeb, 0xe3, 0xb4, 0x57, 0x27, 0xf1, 0x99, 0x55, 0xad, 0x5d, 0x56, 0x85, 0x29, 0x27,
+	0x2a, 0x59, 0xab, 0x7f, 0xe7, 0xb2, 0x5e, 0x48, 0x9e, 0x06, 0xf2, 0x26, 0xf4, 0x2b, 0x4e, 0x92,
+	0x84, 0xf2, 0x2c, 0x89, 0x95, 0x11, 0x19, 0x44, 0x21, 0x91, 0xb4, 0x9e, 0x2d, 0xac, 0x62, 0xa9,
+	0xcf, 0xfa, 0x4c, 0x2f, 0xeb, 0x6a, 0x65, 0xa4, 0x1b, 0xff, 0x5c, 0x85, 0xe5, 0xb6, 0x94, 0xc9,
+	0xce, 0xb8, 0xe4, 0xef, 0x99, 0x8a, 0xa3, 0x8f, 0x1d, 0x80, 0x80, 0x85, 0x34, 0xc0, 0x2a, 0x3d,
+	0xcf, 0xa9, 0x3a, 0x9b, 0x73, 0x8d, 0x17, 0xb5, 0xcf, 0xb7, 0x79, 0xb5, 0x6b, 0x7d, 0xd4, 0x76,
+	0x14, 0x7f, 0xf7, 0x2c, 0xa1, 0x2d, 0xf8, 0xdb, 0x67, 0x9f, 0xe4, 0xef, 0x7d, 0xec, 0xe4, 0x5c,
+	0xc7, 0x9f, 0x09, 0x32, 0x31, 0x7a, 0x17, 0x4a, 0x42, 0x12, 0x89, 0x13, 0x4e, 0x7b, 0xd1, 0xa9,
+	0x97, 0xab, 0x3a, 0x9b, 0x33, 0xad, 0x19, 0x65, 0x5b, 0xe0, 0xb9, 0xaa, 0xe3, 0x83, 0xd2, 0x1e,
+	0x69, 0x25, 0x3a, 0x84, 0x3c, 0x0f, 0x85, 0x97, 0xaf, 0x3a, 0x9b, 0xa5, 0xc6, 0xf7, 0x3e, 0x6f,
+	0xa0, 0x7e, 0x28, 0xda, 0x53, 0xbe, 0x62, 0x42, 0x7b, 0x50, 0xe6, 0x2c, 0x95, 0x14, 0x1b, 0x12,
+	0xaf, 0xa0, 0x99, 0xab, 0x96, 0x99, 0x24, 0x91, 0xb6, 0x57, 0x16, 0x3b, 0xda, 0xc0, 0x6e, 0x63,
+	0x7b, 0xca, 0x2f, 0xf1, 0x73, 0x29, 0xa2, 0x50, 0xd6, 0xfe, 0x4c, 0x0c, 0xc2, 0xbb, 0x57, 0xcd,
+	0x6f, 0x96, 0x1a, 0xad, 0xff, 0xa7, 0x92, 0x4f, 0xb4, 0xb5, 0x5f, 0x3a, 0x19, 0xaf, 0x05, 0xfa,
+	0x21, 0xcc, 0x91, 0x30, 0xc4, 0xa9, 0xa0, 0x1c, 0x93, 0x3e, 0x8d, 0xa5, 0x77, 0x5f, 0xc7, 0x5b,
+	0xa9, 0x99, 0x8e, 0xa9, 0x65, 0x1d, 0x53, 0x6b, 0x31, 0x36, 0xf8, 0x31, 0x19, 0xa4, 0xd4, 0x2f,
+	0x93, 0x30, 0x7c, 0x2e, 0x28, 0x6f, 0x2a, 0x7b, 0xc4, 0x60, 0x5a, 0x72, 0x12, 0x44, 0x71, 0xdf,
+	0x9b, 0xd6, 0xd0, 0xe7, 0x77, 0xbb, 0xdb, 0x5d, 0x43, 0xee, 0x67, 0x5e, 0xd0, 0x87, 0xb0, 0xac,
+	0x49, 0xb2, 0xff, 0x13, 0xb3, 0x44, 0xd9, 0x0b, 0xaf, 0xa8, 0xdd, 0x7f, 0x6d, 0xb2, 0xd2, 0xea,
+	0x57, 0xd6, 0xcc, 0xdb, 0x47, 0xd6, 0xfe, 0xd0, 0x98, 0xfb, 0x8b, 0x8a, 0xe5, 0x92, 0x10, 0x7d,
+	0x04, 0x0f, 0x94, 0xb8, 0x71, 0x95, 0x7d, 0xe6, 0x56, 0xf6, 0xc6, 0x65, 0xf6, 0xa5, 0x93, 0x6b,
+	0xa4, 0x68, 0x1d, 0x4a, 0x82, 0xf2, 0x11, 0xe5, 0x38, 0x26, 0x43, 0xea, 0x81, 0xea, 0x4c, 0x1f,
+	0x8c, 0xe8, 0x80, 0x0c, 0x29, 0x6a, 0x41, 0x39, 0x0a, 0x07, 0x14, 0xcb, 0x68, 0x48, 0x59, 0x2a,
+	0xbd, 0x92, 0xf6, 0xfa, 0xf0, 0xca, 0x6e, 0xec, 0xda, 0xb6, 0x69, 0x15, 0x7e, 0xff, 0x9f, 0x75,
+	0xc7, 0x2f, 0x29, 0x50, 0xd7, 0x60, 0xd0, 0x2e, 0xcc, 0x86, 0x9c, 0x44, 0xf1, 0x98, 0xa4, 0xfc,
+	0x76, 0x24, 0x65, 0x8d, 0xca, 0x58, 0x9e, 0x02, 0x98, 0xc1, 0x85, 0x07, 0xac, 0xef, 0xcd, 0xea,
+	0xf6, 0xfb, 0xfa, 0xb5, 0x5b, 0x7b, 0x3e, 0xdf, 0x46, 0x8d, 0x5a, 0x53, 0x7f, 0x3c, 0x63, 0x7d,
+	0x7f, 0x86, 0x64, 0x4b, 0xd4, 0x06, 0x94, 0x0a, 0x8a, 0x39, 0x1d, 0x32, 0x49, 0x31, 0x09, 0x43,
+	0x4e, 0x85, 0xf0, 0xe6, 0xde, 0xd8, 0x69, 0x6e, 0x2a, 0xa8, 0xaf, 0x41, 0x4d, 0x83, 0x41, 0x4f,
+	0x61, 0xb1, 0x4f, 0x63, 0xca, 0x89, 0x54, 0x74, 0x3f, 0x4f, 0xa9, 0x90, 0x38, 0x0a, 0xbd, 0xf9,
+	0x37, 0x52, 0x2d, 0x64, 0x30, 0xdf, 0xa0, 0xf6, 0x43, 0xf4, 0x17, 0x07, 0x56, 0x7b, 0x8c, 0xbf,
+	0x22, 0x3c, 0xc4, 0xc1, 0x20, 0xa2, 0xb1, 0xc4, 0x01, 0xe5, 0x12, 0x87, 0x54, 0x92, 0x68, 0x20,
+	0x3c, 0x57, 0x0f, 0xaf, 0xde, 0xdd, 0xb6, 0xf3, 0x13, 0xe3, 0x70, 0x47, 0xfb, 0xdb, 0xa1, 0x5c,
+	0xee, 0x1a, 0x6f, 0x13, 0xb3, 0xcc, 0xeb, 0xdd, 0x60, 0x85, 0xfe, 0xec, 0xc0, 0xba, 0xa0, 0x12,
+	0x07, 0x29, 0xe7, 0x3a, 0xe0, 0x6b, 0xe2, 0x5e, 0xd0, 0xc5, 0x88, 0xee, 0x36, 0xee, 0x0e, 0x95,
+	0x3b, 0xc6, 0xe7, 0x95, 0xa0, 0xfc, 0x55, 0x71, 0xb3, 0x12, 0x7d, 0x03, 0x50, 0xc2, 0xd9, 0xe9,
+	0x19, 0xde, 0xde, 0xda, 0x52, 0x1e, 0x65, 0x14, 0xa7, 0xd4, 0x43, 0x55, 0x67, 0xb3, 0xe8, 0xbb,
+	0x5a, 0xb3, 0xbd, 0xb5, 0xb5, 0x63, 0xe5, 0xa8, 0x0e, 0x4b, 0xa7, 0xbd, 0x1e, 0x8e, 0xd3, 0x21,
+	0x96, 0x3c, 0x15, 0x92, 0x86, 0xf8, 0x84, 0x25, 0xc2, 0x5b, 0xac, 0x3a, 0x9b, 0xb3, 0xfe, 0xc2,
+	0x69, 0xaf, 0x77, 0x90, 0x0e, 0xbb, 0x46, 0xd3, 0x66, 0x89, 0x40, 0x14, 0xb6, 0x39, 0x4d, 0x38,
+	0x15, 0xaa, 0x0c, 0x51, 0x32, 0x7a, 0x74, 0xa9, 0xcb, 0x30, 0x11, 0x46, 0x3c, 0x54, 0x07, 0x5e,
+	0xa8, 0xd6, 0x8f, 0xbd, 0x25, 0xed, 0xfd, 0xdd, 0x31, 0x70, 0x3f, 0x19, 0x3d, 0x9a, 0xe8, 0xb3,
+	0xa6, 0x50, 0xa2, 0xf7, 0x34, 0x64, 0x3f, 0x19, 0x3d, 0x46, 0x5f, 0x85, 0x79, 0xf1, 0x32, 0x4a,
+	0xb0, 0x0a, 0x4e, 0x49, 0xe3, 0xd0, 0x5b, 0xd6, 0x24, 0xb3, 0x4a, 0xfc, 0x93, 0x5e, 0xaf, 0xa9,
+	0x85, 0xc8, 0x85, 0xfc, 0x28, 0x22, 0xde, 0x03, 0xfd, 0x63, 0xab, 0x25, 0xfa, 0xa5, 0x03, 0xf3,
+	0x69, 0xd2, 0xe7, 0x24, 0xcc, 0x8e, 0x04, 0xe1, 0xad, 0xe8, 0xbf, 0xe9, 0xc3, 0xbb, 0xdd, 0xa1,
+	0xe7, 0xc6, 0x89, 0x39, 0x3f, 0xfc, 0xb9, 0xf4, 0xe2, 0xa7, 0x40, 0x87, 0xb0, 0x28, 0x24, 0xa7,
+	0x64, 0x88, 0x27, 0xe6, 0x8b, 0xf7, 0x76, 0xa3, 0x61, 0xc1, 0x60, 0xf7, 0x2f, 0x4c, 0x99, 0x3f,
+	0x38, 0xb0, 0x12, 0xc5, 0x92, 0xf2, 0x98, 0x0c, 0xc6, 0xc5, 0xb6, 0x67, 0xde, 0x43, 0xcd, 0x1a,
+	0xdc, 0x6d, 0x7e, 0xfb, 0xd6, 0x99, 0xdd, 0x22, 0x9b, 0xe7, 0x72, 0x74, 0x9d, 0x18, 0x75, 0x60,
+	0x39, 0xa4, 0x03, 0x72, 0x46, 0xd5, 0xaf, 0xcd, 0xc4, 0x79, 0xc2, 0x95, 0xb7, 0x4b, 0x78, 0xd1,
+	0xa2, 0x77, 0x14, 0x38, 0x4b, 0xf9, 0x23, 0x58, 0x3d, 0x4e, 0xfb, 0xbd, 0xe8, 0x14, 0x73, 0x3a,
+	0xa2, 0x5c, 0x50, 0x4c, 0x63, 0x75, 0xeb, 0xc0, 0x8c, 0x87, 0x94, 0x7b, 0xab, 0x6f, 0x1a, 0x42,
+	0xad, 0x9c, 0xe7, 0xf8, 0x9e, 0xa1, 0xf0, 0x0d, 0xc3, 0x9e, 0x26, 0x38, 0x54, 0x78, 0xd4, 0x86,
+	0xf9, 0x6c, 0xa4, 0x65, 0xd1, 0xbe, 0xf3, 0x76, 0xd1, 0xce, 0x59, 0x9c, 0x0d, 0xb4, 0xf2, 0x8f,
+	0x3c, 0x4c, 0xdb, 0x73, 0x13, 0xfd, 0xce, 0x81, 0x39, 0x96, 0x50, 0x63, 0x6f, 0x8e, 0x1d, 0x73,
+	0x2b, 0x0b, 0xbe, 0x90, 0x73, 0xba, 0x76, 0x98, 0xf9, 0x52, 0xe7, 0xd9, 0xc4, 0x54, 0x9b, 0x65,
+	0x17, 0x55, 0xe8, 0xdb, 0xe0, 0x65, 0xe9, 0x9e, 0x50, 0x12, 0x52, 0x2e, 0x70, 0x8f, 0x71, 0x2c,
+	0x49, 0x5f, 0x78, 0xb9, 0x6a, 0x7e, 0x73, 0xc6, 0x5f, 0xb6, 0xfa, 0xb6, 0x51, 0x3f, 0x61, 0xbc,
+	0x4b, 0xfa, 0x02, 0x7d, 0x1f, 0xe6, 0xed, 0xd8, 0x13, 0x64, 0x98, 0x0c, 0xd4, 0xcd, 0xc3, 0x5c,
+	0xdf, 0x16, 0x6d, 0x46, 0xea, 0xea, 0x59, 0x3b, 0x32, 0x37, 0x6b, 0x7f, 0xce, 0xd8, 0x76, 0xac,
+	0xa9, 0x42, 0x73, 0x12, 0x87, 0x6c, 0x78, 0x8e, 0x2e, 0xdc, 0x82, 0x36, 0xb6, 0x63, 0xf4, 0x0f,
+	0xc0, 0x65, 0x23, 0xca, 0xc9, 0x60, 0x70, 0x0e, 0xbf, 0x77, 0x33, 0x7c, 0xde, 0x1a, 0x67, 0xf8,
+	0x8d, 0x1a, 0xcc, 0x4e, 0x14, 0x08, 0x95, 0x60, 0x7a, 0xff, 0xe0, 0x47, 0xfe, 0x5e, 0xa7, 0xe3,
+	0x4e, 0x21, 0x80, 0xfb, 0x7b, 0x66, 0xed, 0x54, 0x0a, 0xbf, 0xfa, 0xe3, 0xda, 0x54, 0xe5, 0xbb,
+	0xb0, 0x7c, 0x6d, 0xdf, 0xa3, 0x2f, 0x43, 0x39, 0x8d, 0xa3, 0x53, 0x2c, 0x58, 0xf0, 0x92, 0x4a,
+	0xa1, 0xf7, 0xb4, 0xe8, 0x97, 0x94, 0xac, 0x63, 0x44, 0x95, 0xdf, 0x38, 0xb0, 0x7a, 0xcb, 0xd8,
+	0x46, 0x8f, 0x60, 0x5a, 0xa4, 0xc7, 0x3f, 0xa3, 0x81, 0xd4, 0xe8, 0xdb, 0xcf, 0xcf, 0xcc, 0x14,
+	0x21, 0x28, 0xa8, 0xd3, 0x46, 0x97, 0xbc, 0xe8, 0xeb, 0xb5, 0x9a, 0x7a, 0x61, 0x2c, 0x74, 0x1d,
+	0x8b, 0xbe, 0x5a, 0x2a, 0x49, 0xca, 0x23, 0x5d, 0x9a, 0xa2, 0xaf, 0x96, 0x4f, 0x0b, 0xc5, 0x9c,
+	0x9b, 0xaf, 0xfc, 0xdd, 0x81, 0xd9, 0x89, 0x41, 0xa5, 0x13, 0xb1, 0xe3, 0x71, 0xfc, 0x64, 0x98,
+	0xf1, 0x4b, 0x56, 0xa6, 0xef, 0xf3, 0x3f, 0x85, 0xe9, 0xec, 0x1a, 0x9c, 0xbb, 0xb3, 0x6b, 0x70,
+	0x46, 0xa9, 0xca, 0x40, 0x63, 0x72, 0x3c, 0xa0, 0xa1, 0x6d, 0xa3, 0x5b, 0xcb, 0x60, 0x4d, 0x37,
+	0xb6, 0x61, 0x66, 0xfc, 0x0e, 0x41, 0x45, 0x28, 0x34, 0x9f, 0x77, 0x0f, 0xdd, 0x29, 0x34, 0x03,
+	0xf7, 0xda, 0xdd, 0xee, 0xd1, 0xb6, 0xeb, 0x64, 0xcb, 0x86, 0x9b, 0x33, 0x7b, 0xb9, 0xf1, 0x0b,
+	0xf0, 0x6e, 0x3a, 0xfd, 0x51, 0x19, 0x8a, 0x9d, 0xe6, 0xc1, 0x7e, 0x77, 0xff, 0x83, 0x3d, 0x77,
+	0x0a, 0xb9, 0x50, 0x7e, 0x72, 0xe8, 0xbf, 0x68, 0xfa, 0xbb, 0xf8, 0xf0, 0xe0, 0xd9, 0xfb, 0xae,
+	0x83, 0x10, 0xcc, 0x35, 0x8f, 0x8e, 0xf6, 0x0e, 0x76, 0xb1, 0x55, 0xb8, 0x39, 0x65, 0x95, 0x61,
+	0x70, 0x67, 0xaf, 0xeb, 0xe6, 0xd1, 0x0a, 0x2c, 0x36, 0x9f, 0xbd, 0x68, 0xbe, 0xdf, 0xc1, 0x13,
+	0xf0, 0x82, 0x09, 0xa0, 0xe5, 0xc1, 0xbc, 0x79, 0x9a, 0x88, 0x84, 0x06, 0x51, 0x2f, 0xa2, 0x1c,
+	0xdd, 0xfb, 0xeb, 0x67, 0x9f, 0xe4, 0x9d, 0x8d, 0xdf, 0x3a, 0x90, 0xf7, 0x43, 0x81, 0xba, 0x30,
+	0x3b, 0xf1, 0x3a, 0xb6, 0x8d, 0xb1, 0x7e, 0xcd, 0xad, 0xd7, 0x6c, 0x5f, 0x47, 0x9b, 0xb5, 0xe6,
+	0x3e, 0xfd, 0xf7, 0xfa, 0x94, 0xfe, 0xd5, 0x7f, 0xad, 0x7f, 0xf5, 0x72, 0x70, 0x41, 0x8b, 0xbe,
+	0x05, 0x0b, 0x17, 0x9f, 0x44, 0x66, 0x08, 0x5d, 0x79, 0x95, 0xcd, 0x5f, 0x78, 0xfe, 0xa8, 0x5f,
+	0x63, 0xe3, 0x4f, 0x0e, 0xc0, 0xf9, 0x86, 0xa1, 0x2f, 0x41, 0x61, 0x3c, 0xbd, 0x26, 0x80, 0x5a,
+	0x8c, 0xb6, 0xe1, 0xbe, 0x3d, 0x7d, 0x72, 0x3a, 0xe6, 0x95, 0x2b, 0xbb, 0xd8, 0xd1, 0x2f, 0xe2,
+	0xf6, 0x94, 0x6f, 0x0d, 0xd1, 0x77, 0xa0, 0xac, 0x5a, 0x2e, 0x9c, 0x7c, 0xaa, 0x2d, 0x5d, 0x01,
+	0x36, 0xe3, 0x33, 0xf5, 0x3c, 0xd3, 0xb6, 0x26, 0xbe, 0xd6, 0x2c, 0x94, 0x6c, 0x32, 0x4a, 0xfa,
+	0xb4, 0x50, 0xcc, 0xbb, 0x85, 0x96, 0xfb, 0xe9, 0xeb, 0x35, 0xe7, 0x5f, 0xaf, 0xd7, 0x9c, 0xff,
+	0xbe, 0x5e, 0x73, 0x3e, 0xc8, 0x8d, 0x1a, 0xc7, 0xf7, 0x35, 0xc7, 0x37, 0xff, 0x17, 0x00, 0x00,
+	0xff, 0xff, 0xab, 0xb6, 0xe6, 0x73, 0x14, 0x11, 0x00, 0x00,
 }

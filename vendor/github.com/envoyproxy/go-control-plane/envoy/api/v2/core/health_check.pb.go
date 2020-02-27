@@ -70,20 +70,20 @@ func (x HealthStatus) String() string {
 	return proto.EnumName(HealthStatus_name, int32(x))
 }
 func (HealthStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_health_check_8dbd5b3312850fe8, []int{0}
+	return fileDescriptor_health_check_26b7f6e44b7ba773, []int{0}
 }
 
 type HealthCheck struct {
 	// The time to wait for a health check response. If the timeout is reached the
 	// health check attempt will be considered a failure.
-	Timeout *time.Duration `protobuf:"bytes,1,opt,name=timeout,stdduration" json:"timeout,omitempty"`
+	Timeout *time.Duration `protobuf:"bytes,1,opt,name=timeout,proto3,stdduration" json:"timeout,omitempty"`
 	// The interval between health checks.
-	Interval *time.Duration `protobuf:"bytes,2,opt,name=interval,stdduration" json:"interval,omitempty"`
+	Interval *time.Duration `protobuf:"bytes,2,opt,name=interval,proto3,stdduration" json:"interval,omitempty"`
 	// An optional jitter amount in millseconds. If specified, during every
-	// interval Envoy will add 0 to interval_jitter to the wait time.
-	IntervalJitter *types.Duration `protobuf:"bytes,3,opt,name=interval_jitter,json=intervalJitter" json:"interval_jitter,omitempty"`
+	// interval Envoy will add interval_jitter to the wait time.
+	IntervalJitter *types.Duration `protobuf:"bytes,3,opt,name=interval_jitter,json=intervalJitter,proto3" json:"interval_jitter,omitempty"`
 	// An optional jitter amount as a percentage of interval_ms. If specified,
-	// during every interval Envoy will add 0 to interval_ms *
+	// during every interval Envoy will add interval_ms *
 	// interval_jitter_percent / 100 to the wait time.
 	//
 	// If interval_jitter_ms and interval_jitter_percent are both set, both of
@@ -92,15 +92,15 @@ type HealthCheck struct {
 	// The number of unhealthy health checks required before a host is marked
 	// unhealthy. Note that for *http* health checking if a host responds with 503
 	// this threshold is ignored and the host is considered unhealthy immediately.
-	UnhealthyThreshold *types.UInt32Value `protobuf:"bytes,4,opt,name=unhealthy_threshold,json=unhealthyThreshold" json:"unhealthy_threshold,omitempty"`
+	UnhealthyThreshold *types.UInt32Value `protobuf:"bytes,4,opt,name=unhealthy_threshold,json=unhealthyThreshold,proto3" json:"unhealthy_threshold,omitempty"`
 	// The number of healthy health checks required before a host is marked
 	// healthy. Note that during startup, only a single successful health check is
 	// required to mark a host healthy.
-	HealthyThreshold *types.UInt32Value `protobuf:"bytes,5,opt,name=healthy_threshold,json=healthyThreshold" json:"healthy_threshold,omitempty"`
+	HealthyThreshold *types.UInt32Value `protobuf:"bytes,5,opt,name=healthy_threshold,json=healthyThreshold,proto3" json:"healthy_threshold,omitempty"`
 	// [#not-implemented-hide:] Non-serving port for health checking.
-	AltPort *types.UInt32Value `protobuf:"bytes,6,opt,name=alt_port,json=altPort" json:"alt_port,omitempty"`
+	AltPort *types.UInt32Value `protobuf:"bytes,6,opt,name=alt_port,json=altPort,proto3" json:"alt_port,omitempty"`
 	// Reuse health check connection between health checks. Default is true.
-	ReuseConnection *types.BoolValue `protobuf:"bytes,7,opt,name=reuse_connection,json=reuseConnection" json:"reuse_connection,omitempty"`
+	ReuseConnection *types.BoolValue `protobuf:"bytes,7,opt,name=reuse_connection,json=reuseConnection,proto3" json:"reuse_connection,omitempty"`
 	// Types that are valid to be assigned to HealthChecker:
 	//	*HealthCheck_HttpHealthCheck_
 	//	*HealthCheck_TcpHealthCheck_
@@ -115,39 +115,43 @@ type HealthCheck struct {
 	// any other.
 	//
 	// The default value for "no traffic interval" is 60 seconds.
-	NoTrafficInterval *types.Duration `protobuf:"bytes,12,opt,name=no_traffic_interval,json=noTrafficInterval" json:"no_traffic_interval,omitempty"`
+	NoTrafficInterval *types.Duration `protobuf:"bytes,12,opt,name=no_traffic_interval,json=noTrafficInterval,proto3" json:"no_traffic_interval,omitempty"`
 	// The "unhealthy interval" is a health check interval that is used for hosts that are marked as
 	// unhealthy. As soon as the host is marked as healthy, Envoy will shift back to using the
 	// standard health check interval that is defined.
 	//
 	// The default value for "unhealthy interval" is the same as "interval".
-	UnhealthyInterval *types.Duration `protobuf:"bytes,14,opt,name=unhealthy_interval,json=unhealthyInterval" json:"unhealthy_interval,omitempty"`
+	UnhealthyInterval *types.Duration `protobuf:"bytes,14,opt,name=unhealthy_interval,json=unhealthyInterval,proto3" json:"unhealthy_interval,omitempty"`
 	// The "unhealthy edge interval" is a special health check interval that is used for the first
 	// health check right after a host is marked as unhealthy. For subsequent health checks
 	// Envoy will shift back to using either "unhealthy interval" if present or the standard health
 	// check interval that is defined.
 	//
 	// The default value for "unhealthy edge interval" is the same as "unhealthy interval".
-	UnhealthyEdgeInterval *types.Duration `protobuf:"bytes,15,opt,name=unhealthy_edge_interval,json=unhealthyEdgeInterval" json:"unhealthy_edge_interval,omitempty"`
+	UnhealthyEdgeInterval *types.Duration `protobuf:"bytes,15,opt,name=unhealthy_edge_interval,json=unhealthyEdgeInterval,proto3" json:"unhealthy_edge_interval,omitempty"`
 	// The "healthy edge interval" is a special health check interval that is used for the first
 	// health check right after a host is marked as healthy. For subsequent health checks
 	// Envoy will shift back to using the standard health check interval that is defined.
 	//
 	// The default value for "healthy edge interval" is the same as the default interval.
-	HealthyEdgeInterval *types.Duration `protobuf:"bytes,16,opt,name=healthy_edge_interval,json=healthyEdgeInterval" json:"healthy_edge_interval,omitempty"`
+	HealthyEdgeInterval *types.Duration `protobuf:"bytes,16,opt,name=healthy_edge_interval,json=healthyEdgeInterval,proto3" json:"healthy_edge_interval,omitempty"`
 	// Specifies the path to the :ref:`health check event log <arch_overview_health_check_logging>`.
 	// If empty, no event log will be written.
-	EventLogPath         string   `protobuf:"bytes,17,opt,name=event_log_path,json=eventLogPath,proto3" json:"event_log_path,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	EventLogPath string `protobuf:"bytes,17,opt,name=event_log_path,json=eventLogPath,proto3" json:"event_log_path,omitempty"`
+	// If set to true, health check failure events will always be logged. If set to false, only the
+	// initial health check failure event will be logged.
+	// The default value is false.
+	AlwaysLogHealthCheckFailures bool     `protobuf:"varint,19,opt,name=always_log_health_check_failures,json=alwaysLogHealthCheckFailures,proto3" json:"always_log_health_check_failures,omitempty"`
+	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
+	XXX_unrecognized             []byte   `json:"-"`
+	XXX_sizecache                int32    `json:"-"`
 }
 
 func (m *HealthCheck) Reset()         { *m = HealthCheck{} }
 func (m *HealthCheck) String() string { return proto.CompactTextString(m) }
 func (*HealthCheck) ProtoMessage()    {}
 func (*HealthCheck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_health_check_8dbd5b3312850fe8, []int{0}
+	return fileDescriptor_health_check_26b7f6e44b7ba773, []int{0}
 }
 func (m *HealthCheck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -184,16 +188,16 @@ type isHealthCheck_HealthChecker interface {
 }
 
 type HealthCheck_HttpHealthCheck_ struct {
-	HttpHealthCheck *HealthCheck_HttpHealthCheck `protobuf:"bytes,8,opt,name=http_health_check,json=httpHealthCheck,oneof"`
+	HttpHealthCheck *HealthCheck_HttpHealthCheck `protobuf:"bytes,8,opt,name=http_health_check,json=httpHealthCheck,proto3,oneof"`
 }
 type HealthCheck_TcpHealthCheck_ struct {
-	TcpHealthCheck *HealthCheck_TcpHealthCheck `protobuf:"bytes,9,opt,name=tcp_health_check,json=tcpHealthCheck,oneof"`
+	TcpHealthCheck *HealthCheck_TcpHealthCheck `protobuf:"bytes,9,opt,name=tcp_health_check,json=tcpHealthCheck,proto3,oneof"`
 }
 type HealthCheck_GrpcHealthCheck_ struct {
-	GrpcHealthCheck *HealthCheck_GrpcHealthCheck `protobuf:"bytes,11,opt,name=grpc_health_check,json=grpcHealthCheck,oneof"`
+	GrpcHealthCheck *HealthCheck_GrpcHealthCheck `protobuf:"bytes,11,opt,name=grpc_health_check,json=grpcHealthCheck,proto3,oneof"`
 }
 type HealthCheck_CustomHealthCheck_ struct {
-	CustomHealthCheck *HealthCheck_CustomHealthCheck `protobuf:"bytes,13,opt,name=custom_health_check,json=customHealthCheck,oneof"`
+	CustomHealthCheck *HealthCheck_CustomHealthCheck `protobuf:"bytes,13,opt,name=custom_health_check,json=customHealthCheck,proto3,oneof"`
 }
 
 func (*HealthCheck_HttpHealthCheck_) isHealthCheck_HealthChecker()   {}
@@ -327,6 +331,13 @@ func (m *HealthCheck) GetEventLogPath() string {
 	return ""
 }
 
+func (m *HealthCheck) GetAlwaysLogHealthCheckFailures() bool {
+	if m != nil {
+		return m.AlwaysLogHealthCheckFailures
+	}
+	return false
+}
+
 // XXX_OneofFuncs is for the internal use of the proto package.
 func (*HealthCheck) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
 	return _HealthCheck_OneofMarshaler, _HealthCheck_OneofUnmarshaler, _HealthCheck_OneofSizer, []interface{}{
@@ -454,7 +465,7 @@ func (m *HealthCheck_Payload) Reset()         { *m = HealthCheck_Payload{} }
 func (m *HealthCheck_Payload) String() string { return proto.CompactTextString(m) }
 func (*HealthCheck_Payload) ProtoMessage()    {}
 func (*HealthCheck_Payload) Descriptor() ([]byte, []int) {
-	return fileDescriptor_health_check_8dbd5b3312850fe8, []int{0, 0}
+	return fileDescriptor_health_check_26b7f6e44b7ba773, []int{0, 0}
 }
 func (m *HealthCheck_Payload) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -597,9 +608,9 @@ type HealthCheck_HttpHealthCheck struct {
 	// */healthcheck*.
 	Path string `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
 	// [#not-implemented-hide:] HTTP specific payload.
-	Send *HealthCheck_Payload `protobuf:"bytes,3,opt,name=send" json:"send,omitempty"`
+	Send *HealthCheck_Payload `protobuf:"bytes,3,opt,name=send,proto3" json:"send,omitempty"`
 	// [#not-implemented-hide:] HTTP specific response.
-	Receive *HealthCheck_Payload `protobuf:"bytes,4,opt,name=receive" json:"receive,omitempty"`
+	Receive *HealthCheck_Payload `protobuf:"bytes,4,opt,name=receive,proto3" json:"receive,omitempty"`
 	// An optional service name parameter which is used to validate the identity of
 	// the health checked cluster. See the :ref:`architecture overview
 	// <arch_overview_health_checking_identity>` for more information.
@@ -608,10 +619,10 @@ type HealthCheck_HttpHealthCheck struct {
 	// health checked cluster. For more information, including details on header value syntax, see
 	// the documentation on :ref:`custom request headers
 	// <config_http_conn_man_headers_custom_request_headers>`.
-	RequestHeadersToAdd []*HeaderValueOption `protobuf:"bytes,6,rep,name=request_headers_to_add,json=requestHeadersToAdd" json:"request_headers_to_add,omitempty"`
+	RequestHeadersToAdd []*HeaderValueOption `protobuf:"bytes,6,rep,name=request_headers_to_add,json=requestHeadersToAdd,proto3" json:"request_headers_to_add,omitempty"`
 	// Specifies a list of HTTP headers that should be removed from each request that is sent to the
 	// health checked cluster.
-	RequestHeadersToRemove []string `protobuf:"bytes,8,rep,name=request_headers_to_remove,json=requestHeadersToRemove" json:"request_headers_to_remove,omitempty"`
+	RequestHeadersToRemove []string `protobuf:"bytes,8,rep,name=request_headers_to_remove,json=requestHeadersToRemove,proto3" json:"request_headers_to_remove,omitempty"`
 	// If set, health checks will be made using http/2.
 	UseHttp2             bool     `protobuf:"varint,7,opt,name=use_http2,json=useHttp2,proto3" json:"use_http2,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -623,7 +634,7 @@ func (m *HealthCheck_HttpHealthCheck) Reset()         { *m = HealthCheck_HttpHea
 func (m *HealthCheck_HttpHealthCheck) String() string { return proto.CompactTextString(m) }
 func (*HealthCheck_HttpHealthCheck) ProtoMessage()    {}
 func (*HealthCheck_HttpHealthCheck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_health_check_8dbd5b3312850fe8, []int{0, 1}
+	return fileDescriptor_health_check_26b7f6e44b7ba773, []int{0, 1}
 }
 func (m *HealthCheck_HttpHealthCheck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -710,11 +721,11 @@ func (m *HealthCheck_HttpHealthCheck) GetUseHttp2() bool {
 
 type HealthCheck_TcpHealthCheck struct {
 	// Empty payloads imply a connect-only health check.
-	Send *HealthCheck_Payload `protobuf:"bytes,1,opt,name=send" json:"send,omitempty"`
+	Send *HealthCheck_Payload `protobuf:"bytes,1,opt,name=send,proto3" json:"send,omitempty"`
 	// When checking the response, “fuzzy” matching is performed such that each
 	// binary block must be found, and in the order specified, but not
 	// necessarily contiguous.
-	Receive              []*HealthCheck_Payload `protobuf:"bytes,2,rep,name=receive" json:"receive,omitempty"`
+	Receive              []*HealthCheck_Payload `protobuf:"bytes,2,rep,name=receive,proto3" json:"receive,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
 	XXX_unrecognized     []byte                 `json:"-"`
 	XXX_sizecache        int32                  `json:"-"`
@@ -724,7 +735,7 @@ func (m *HealthCheck_TcpHealthCheck) Reset()         { *m = HealthCheck_TcpHealt
 func (m *HealthCheck_TcpHealthCheck) String() string { return proto.CompactTextString(m) }
 func (*HealthCheck_TcpHealthCheck) ProtoMessage()    {}
 func (*HealthCheck_TcpHealthCheck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_health_check_8dbd5b3312850fe8, []int{0, 2}
+	return fileDescriptor_health_check_26b7f6e44b7ba773, []int{0, 2}
 }
 func (m *HealthCheck_TcpHealthCheck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -782,7 +793,7 @@ func (m *HealthCheck_RedisHealthCheck) Reset()         { *m = HealthCheck_RedisH
 func (m *HealthCheck_RedisHealthCheck) String() string { return proto.CompactTextString(m) }
 func (*HealthCheck_RedisHealthCheck) ProtoMessage()    {}
 func (*HealthCheck_RedisHealthCheck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_health_check_8dbd5b3312850fe8, []int{0, 3}
+	return fileDescriptor_health_check_26b7f6e44b7ba773, []int{0, 3}
 }
 func (m *HealthCheck_RedisHealthCheck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -838,7 +849,7 @@ func (m *HealthCheck_GrpcHealthCheck) Reset()         { *m = HealthCheck_GrpcHea
 func (m *HealthCheck_GrpcHealthCheck) String() string { return proto.CompactTextString(m) }
 func (*HealthCheck_GrpcHealthCheck) ProtoMessage()    {}
 func (*HealthCheck_GrpcHealthCheck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_health_check_8dbd5b3312850fe8, []int{0, 4}
+	return fileDescriptor_health_check_26b7f6e44b7ba773, []int{0, 4}
 }
 func (m *HealthCheck_GrpcHealthCheck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -880,17 +891,21 @@ type HealthCheck_CustomHealthCheck struct {
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// A custom health checker specific configuration which depends on the custom health checker
 	// being instantiated. See :api:`envoy/config/health_checker` for reference.
-	Config               *types.Struct `protobuf:"bytes,2,opt,name=config" json:"config,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
+	//
+	// Types that are valid to be assigned to ConfigType:
+	//	*HealthCheck_CustomHealthCheck_Config
+	//	*HealthCheck_CustomHealthCheck_TypedConfig
+	ConfigType           isHealthCheck_CustomHealthCheck_ConfigType `protobuf_oneof:"config_type"`
+	XXX_NoUnkeyedLiteral struct{}                                   `json:"-"`
+	XXX_unrecognized     []byte                                     `json:"-"`
+	XXX_sizecache        int32                                      `json:"-"`
 }
 
 func (m *HealthCheck_CustomHealthCheck) Reset()         { *m = HealthCheck_CustomHealthCheck{} }
 func (m *HealthCheck_CustomHealthCheck) String() string { return proto.CompactTextString(m) }
 func (*HealthCheck_CustomHealthCheck) ProtoMessage()    {}
 func (*HealthCheck_CustomHealthCheck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_health_check_8dbd5b3312850fe8, []int{0, 5}
+	return fileDescriptor_health_check_26b7f6e44b7ba773, []int{0, 5}
 }
 func (m *HealthCheck_CustomHealthCheck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -919,6 +934,30 @@ func (m *HealthCheck_CustomHealthCheck) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_HealthCheck_CustomHealthCheck proto.InternalMessageInfo
 
+type isHealthCheck_CustomHealthCheck_ConfigType interface {
+	isHealthCheck_CustomHealthCheck_ConfigType()
+	Equal(interface{}) bool
+	MarshalTo([]byte) (int, error)
+	Size() int
+}
+
+type HealthCheck_CustomHealthCheck_Config struct {
+	Config *types.Struct `protobuf:"bytes,2,opt,name=config,proto3,oneof"`
+}
+type HealthCheck_CustomHealthCheck_TypedConfig struct {
+	TypedConfig *types.Any `protobuf:"bytes,3,opt,name=typed_config,json=typedConfig,proto3,oneof"`
+}
+
+func (*HealthCheck_CustomHealthCheck_Config) isHealthCheck_CustomHealthCheck_ConfigType()      {}
+func (*HealthCheck_CustomHealthCheck_TypedConfig) isHealthCheck_CustomHealthCheck_ConfigType() {}
+
+func (m *HealthCheck_CustomHealthCheck) GetConfigType() isHealthCheck_CustomHealthCheck_ConfigType {
+	if m != nil {
+		return m.ConfigType
+	}
+	return nil
+}
+
 func (m *HealthCheck_CustomHealthCheck) GetName() string {
 	if m != nil {
 		return m.Name
@@ -927,10 +966,91 @@ func (m *HealthCheck_CustomHealthCheck) GetName() string {
 }
 
 func (m *HealthCheck_CustomHealthCheck) GetConfig() *types.Struct {
-	if m != nil {
-		return m.Config
+	if x, ok := m.GetConfigType().(*HealthCheck_CustomHealthCheck_Config); ok {
+		return x.Config
 	}
 	return nil
+}
+
+func (m *HealthCheck_CustomHealthCheck) GetTypedConfig() *types.Any {
+	if x, ok := m.GetConfigType().(*HealthCheck_CustomHealthCheck_TypedConfig); ok {
+		return x.TypedConfig
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*HealthCheck_CustomHealthCheck) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _HealthCheck_CustomHealthCheck_OneofMarshaler, _HealthCheck_CustomHealthCheck_OneofUnmarshaler, _HealthCheck_CustomHealthCheck_OneofSizer, []interface{}{
+		(*HealthCheck_CustomHealthCheck_Config)(nil),
+		(*HealthCheck_CustomHealthCheck_TypedConfig)(nil),
+	}
+}
+
+func _HealthCheck_CustomHealthCheck_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*HealthCheck_CustomHealthCheck)
+	// config_type
+	switch x := m.ConfigType.(type) {
+	case *HealthCheck_CustomHealthCheck_Config:
+		_ = b.EncodeVarint(2<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Config); err != nil {
+			return err
+		}
+	case *HealthCheck_CustomHealthCheck_TypedConfig:
+		_ = b.EncodeVarint(3<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.TypedConfig); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("HealthCheck_CustomHealthCheck.ConfigType has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _HealthCheck_CustomHealthCheck_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*HealthCheck_CustomHealthCheck)
+	switch tag {
+	case 2: // config_type.config
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(types.Struct)
+		err := b.DecodeMessage(msg)
+		m.ConfigType = &HealthCheck_CustomHealthCheck_Config{msg}
+		return true, err
+	case 3: // config_type.typed_config
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(types.Any)
+		err := b.DecodeMessage(msg)
+		m.ConfigType = &HealthCheck_CustomHealthCheck_TypedConfig{msg}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _HealthCheck_CustomHealthCheck_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*HealthCheck_CustomHealthCheck)
+	// config_type
+	switch x := m.ConfigType.(type) {
+	case *HealthCheck_CustomHealthCheck_Config:
+		s := proto.Size(x.Config)
+		n += 1 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *HealthCheck_CustomHealthCheck_TypedConfig:
+		s := proto.Size(x.TypedConfig)
+		n += 1 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
 }
 
 func init() {
@@ -1020,6 +1140,9 @@ func (this *HealthCheck) Equal(that interface{}) bool {
 		return false
 	}
 	if this.EventLogPath != that1.EventLogPath {
+		return false
+	}
+	if this.AlwaysLogHealthCheckFailures != that1.AlwaysLogHealthCheckFailures {
 		return false
 	}
 	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
@@ -1373,10 +1496,64 @@ func (this *HealthCheck_CustomHealthCheck) Equal(that interface{}) bool {
 	if this.Name != that1.Name {
 		return false
 	}
-	if !this.Config.Equal(that1.Config) {
+	if that1.ConfigType == nil {
+		if this.ConfigType != nil {
+			return false
+		}
+	} else if this.ConfigType == nil {
+		return false
+	} else if !this.ConfigType.Equal(that1.ConfigType) {
 		return false
 	}
 	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
+		return false
+	}
+	return true
+}
+func (this *HealthCheck_CustomHealthCheck_Config) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*HealthCheck_CustomHealthCheck_Config)
+	if !ok {
+		that2, ok := that.(HealthCheck_CustomHealthCheck_Config)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Config.Equal(that1.Config) {
+		return false
+	}
+	return true
+}
+func (this *HealthCheck_CustomHealthCheck_TypedConfig) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*HealthCheck_CustomHealthCheck_TypedConfig)
+	if !ok {
+		that2, ok := that.(HealthCheck_CustomHealthCheck_TypedConfig)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.TypedConfig.Equal(that1.TypedConfig) {
 		return false
 	}
 	return true
@@ -1529,6 +1706,18 @@ func (m *HealthCheck) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x1
 		i++
 		i = encodeVarintHealthCheck(dAtA, i, uint64(m.IntervalJitterPercent))
+	}
+	if m.AlwaysLogHealthCheckFailures {
+		dAtA[i] = 0x98
+		i++
+		dAtA[i] = 0x1
+		i++
+		if m.AlwaysLogHealthCheckFailures {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -1852,15 +2041,12 @@ func (m *HealthCheck_CustomHealthCheck) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintHealthCheck(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
 	}
-	if m.Config != nil {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintHealthCheck(dAtA, i, uint64(m.Config.Size()))
-		n21, err := m.Config.MarshalTo(dAtA[i:])
+	if m.ConfigType != nil {
+		nn21, err := m.ConfigType.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n21
+		i += nn21
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -1868,6 +2054,34 @@ func (m *HealthCheck_CustomHealthCheck) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *HealthCheck_CustomHealthCheck_Config) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.Config != nil {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintHealthCheck(dAtA, i, uint64(m.Config.Size()))
+		n22, err := m.Config.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n22
+	}
+	return i, nil
+}
+func (m *HealthCheck_CustomHealthCheck_TypedConfig) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.TypedConfig != nil {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintHealthCheck(dAtA, i, uint64(m.TypedConfig.Size()))
+		n23, err := m.TypedConfig.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n23
+	}
+	return i, nil
+}
 func encodeVarintHealthCheck(dAtA []byte, offset int, v uint64) int {
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
@@ -1878,6 +2092,9 @@ func encodeVarintHealthCheck(dAtA []byte, offset int, v uint64) int {
 	return offset + 1
 }
 func (m *HealthCheck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.Timeout != nil {
@@ -1934,6 +2151,9 @@ func (m *HealthCheck) Size() (n int) {
 	if m.IntervalJitterPercent != 0 {
 		n += 2 + sovHealthCheck(uint64(m.IntervalJitterPercent))
 	}
+	if m.AlwaysLogHealthCheckFailures {
+		n += 3
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -1941,6 +2161,9 @@ func (m *HealthCheck) Size() (n int) {
 }
 
 func (m *HealthCheck_HttpHealthCheck_) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.HttpHealthCheck != nil {
@@ -1950,6 +2173,9 @@ func (m *HealthCheck_HttpHealthCheck_) Size() (n int) {
 	return n
 }
 func (m *HealthCheck_TcpHealthCheck_) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.TcpHealthCheck != nil {
@@ -1959,6 +2185,9 @@ func (m *HealthCheck_TcpHealthCheck_) Size() (n int) {
 	return n
 }
 func (m *HealthCheck_GrpcHealthCheck_) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.GrpcHealthCheck != nil {
@@ -1968,6 +2197,9 @@ func (m *HealthCheck_GrpcHealthCheck_) Size() (n int) {
 	return n
 }
 func (m *HealthCheck_CustomHealthCheck_) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.CustomHealthCheck != nil {
@@ -1977,6 +2209,9 @@ func (m *HealthCheck_CustomHealthCheck_) Size() (n int) {
 	return n
 }
 func (m *HealthCheck_Payload) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.Payload != nil {
@@ -1989,6 +2224,9 @@ func (m *HealthCheck_Payload) Size() (n int) {
 }
 
 func (m *HealthCheck_Payload_Text) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.Text)
@@ -1996,6 +2234,9 @@ func (m *HealthCheck_Payload_Text) Size() (n int) {
 	return n
 }
 func (m *HealthCheck_Payload_Binary) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.Binary != nil {
@@ -2005,6 +2246,9 @@ func (m *HealthCheck_Payload_Binary) Size() (n int) {
 	return n
 }
 func (m *HealthCheck_HttpHealthCheck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.Host)
@@ -2049,6 +2293,9 @@ func (m *HealthCheck_HttpHealthCheck) Size() (n int) {
 }
 
 func (m *HealthCheck_TcpHealthCheck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.Send != nil {
@@ -2068,6 +2315,9 @@ func (m *HealthCheck_TcpHealthCheck) Size() (n int) {
 }
 
 func (m *HealthCheck_RedisHealthCheck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.Key)
@@ -2081,6 +2331,9 @@ func (m *HealthCheck_RedisHealthCheck) Size() (n int) {
 }
 
 func (m *HealthCheck_GrpcHealthCheck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.ServiceName)
@@ -2094,18 +2347,45 @@ func (m *HealthCheck_GrpcHealthCheck) Size() (n int) {
 }
 
 func (m *HealthCheck_CustomHealthCheck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovHealthCheck(uint64(l))
 	}
+	if m.ConfigType != nil {
+		n += m.ConfigType.Size()
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *HealthCheck_CustomHealthCheck_Config) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	if m.Config != nil {
 		l = m.Config.Size()
 		n += 1 + l + sovHealthCheck(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
+	return n
+}
+func (m *HealthCheck_CustomHealthCheck_TypedConfig) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.TypedConfig != nil {
+		l = m.TypedConfig.Size()
+		n += 1 + l + sovHealthCheck(uint64(l))
 	}
 	return n
 }
@@ -2691,6 +2971,26 @@ func (m *HealthCheck) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 19:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AlwaysLogHealthCheckFailures", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHealthCheck
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.AlwaysLogHealthCheckFailures = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipHealthCheck(dAtA[iNdEx:])
@@ -3466,12 +3766,43 @@ func (m *HealthCheck_CustomHealthCheck) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Config == nil {
-				m.Config = &types.Struct{}
-			}
-			if err := m.Config.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			v := &types.Struct{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			m.ConfigType = &HealthCheck_CustomHealthCheck_Config{v}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TypedConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHealthCheck
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHealthCheck
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &types.Any{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.ConfigType = &HealthCheck_CustomHealthCheck_TypedConfig{v}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3601,73 +3932,79 @@ var (
 )
 
 func init() {
-	proto.RegisterFile("envoy/api/v2/core/health_check.proto", fileDescriptor_health_check_8dbd5b3312850fe8)
+	proto.RegisterFile("envoy/api/v2/core/health_check.proto", fileDescriptor_health_check_26b7f6e44b7ba773)
 }
 
-var fileDescriptor_health_check_8dbd5b3312850fe8 = []byte{
-	// 1013 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x96, 0x41, 0x6f, 0xe3, 0x44,
-	0x14, 0xc7, 0xeb, 0x26, 0xdb, 0x24, 0x2f, 0x69, 0xe2, 0x4c, 0xe9, 0xd6, 0x1b, 0x4a, 0x37, 0xa0,
-	0x0a, 0x55, 0x2b, 0xe1, 0xa0, 0x2c, 0x02, 0xc1, 0x89, 0xa6, 0x5b, 0x35, 0x59, 0xb6, 0x69, 0x99,
-	0x4d, 0x17, 0x55, 0x42, 0xb2, 0xa6, 0xf6, 0xab, 0x63, 0xd6, 0xf5, 0x98, 0xf1, 0x38, 0xd0, 0x33,
-	0x77, 0xce, 0xfb, 0x11, 0x10, 0x9f, 0x00, 0x71, 0xda, 0x23, 0x47, 0xbe, 0x01, 0xa8, 0xb7, 0xfd,
-	0x16, 0xc8, 0x63, 0x27, 0x6d, 0x92, 0xa2, 0x74, 0xb5, 0xb7, 0x99, 0xf7, 0xe6, 0xff, 0x9b, 0x37,
-	0x33, 0xcf, 0xff, 0x04, 0xb6, 0x31, 0x18, 0xf1, 0xcb, 0x16, 0x0b, 0xbd, 0xd6, 0xa8, 0xdd, 0xb2,
-	0xb9, 0xc0, 0xd6, 0x10, 0x99, 0x2f, 0x87, 0x96, 0x3d, 0x44, 0xfb, 0xa5, 0x19, 0x0a, 0x2e, 0x39,
-	0xa9, 0xab, 0x55, 0x26, 0x0b, 0x3d, 0x73, 0xd4, 0x36, 0x93, 0x55, 0x8d, 0xcd, 0x79, 0xe1, 0x19,
-	0x8b, 0x30, 0x15, 0x34, 0xb6, 0x5c, 0xce, 0x5d, 0x1f, 0x5b, 0x6a, 0x76, 0x16, 0x9f, 0xb7, 0x9c,
-	0x58, 0x30, 0xe9, 0xf1, 0x20, 0xcb, 0x6f, 0xce, 0xe6, 0x23, 0x29, 0x62, 0x5b, 0xfe, 0x9f, 0xfa,
-	0x27, 0xc1, 0xc2, 0x10, 0x45, 0x94, 0xe5, 0x37, 0x46, 0xcc, 0xf7, 0x1c, 0x26, 0xb1, 0x35, 0x1e,
-	0x64, 0x89, 0xf7, 0x5c, 0xee, 0x72, 0x35, 0x6c, 0x25, 0xa3, 0x34, 0xfa, 0xd1, 0x2f, 0x75, 0x28,
-	0x77, 0xd5, 0xa1, 0xf6, 0x92, 0x33, 0x91, 0x7d, 0x28, 0x48, 0xef, 0x02, 0x79, 0x2c, 0x0d, 0xad,
-	0xa9, 0xed, 0x94, 0xdb, 0x0f, 0xcc, 0x74, 0x43, 0x73, 0xbc, 0xa1, 0xf9, 0x24, 0x2b, 0xb7, 0xa3,
-	0xbf, 0xfa, 0xe7, 0xa1, 0xf6, 0xe7, 0x9b, 0xd7, 0xb9, 0xc2, 0xef, 0x5a, 0xbe, 0xa8, 0x3d, 0x5a,
-	0xa2, 0x63, 0x2d, 0x39, 0x80, 0xa2, 0x17, 0x48, 0x14, 0x23, 0xe6, 0x1b, 0xcb, 0x6f, 0xcf, 0x99,
-	0x88, 0x49, 0x07, 0x6a, 0xe3, 0xb1, 0xf5, 0x83, 0x27, 0x25, 0x0a, 0x23, 0xb7, 0x80, 0x47, 0xab,
-	0x63, 0xc5, 0x53, 0x25, 0x20, 0x87, 0xb0, 0x16, 0x07, 0xe9, 0xcb, 0x5d, 0x5a, 0x72, 0x28, 0x30,
-	0x1a, 0x72, 0xdf, 0x31, 0xf2, 0x8a, 0xb3, 0x39, 0xc7, 0x39, 0xe9, 0x05, 0xf2, 0x71, 0xfb, 0x05,
-	0xf3, 0x63, 0xa4, 0x64, 0x22, 0x1c, 0x8c, 0x75, 0xa4, 0x07, 0xf5, 0x79, 0xd8, 0xbd, 0x3b, 0xc0,
-	0xf4, 0x39, 0xd4, 0x17, 0x50, 0x64, 0xbe, 0xb4, 0x42, 0x2e, 0xa4, 0xb1, 0x72, 0x07, 0x42, 0x81,
-	0xf9, 0xf2, 0x98, 0x0b, 0x49, 0xf6, 0x41, 0x17, 0x18, 0x47, 0x68, 0xd9, 0x3c, 0x08, 0xd0, 0x4e,
-	0x8e, 0x6d, 0x14, 0x14, 0xa0, 0x31, 0x07, 0xe8, 0x70, 0xee, 0xa7, 0xf2, 0x9a, 0xd2, 0xec, 0x4d,
-	0x24, 0xe4, 0x7b, 0xa8, 0x0f, 0xa5, 0x0c, 0xad, 0x9b, 0x6d, 0x6d, 0x14, 0x15, 0xc7, 0x34, 0xe7,
-	0xfa, 0xda, 0xbc, 0xd1, 0x28, 0x66, 0x57, 0xca, 0xf0, 0xc6, 0xbc, 0xbb, 0x44, 0x6b, 0xc3, 0xe9,
-	0x10, 0x39, 0x05, 0x5d, 0xda, 0x33, 0xf0, 0x92, 0x82, 0x7f, 0xb2, 0x00, 0x3e, 0xb0, 0x67, 0xd8,
-	0x55, 0x39, 0x15, 0x49, 0x0a, 0x77, 0x45, 0x68, 0x4f, 0xb3, 0xcb, 0x77, 0x2a, 0xfc, 0x40, 0x84,
-	0xf6, 0x4c, 0xe1, 0xee, 0x74, 0x88, 0xf4, 0x60, 0x2d, 0xe0, 0x96, 0x14, 0xec, 0xfc, 0xdc, 0xb3,
-	0xad, 0x49, 0x23, 0x57, 0x16, 0x35, 0x5e, 0x3d, 0xe0, 0x83, 0x54, 0xd4, 0x1b, 0xf7, 0xef, 0x19,
-	0xac, 0xd9, 0x71, 0x24, 0xf9, 0xc5, 0x74, 0xa9, 0xab, 0x0a, 0xf5, 0xe9, 0x82, 0x52, 0xf7, 0x94,
-	0x72, 0xba, 0xd8, 0xba, 0x3d, 0x1b, 0x24, 0x5d, 0xb8, 0x6e, 0xd3, 0xeb, 0x6a, 0xab, 0x0b, 0xab,
-	0x9d, 0x88, 0x26, 0xd5, 0x7e, 0x0b, 0x1b, 0xd7, 0x24, 0x74, 0x5c, 0xbc, 0xc6, 0xd5, 0x16, 0xe1,
-	0xd6, 0x27, 0xca, 0x7d, 0xc7, 0xc5, 0x09, 0xf2, 0x10, 0xd6, 0x6f, 0x07, 0xea, 0x8b, 0x80, 0x6b,
-	0xb7, 0xe1, 0xb6, 0xa1, 0x8a, 0x23, 0x0c, 0xa4, 0xe5, 0x73, 0xd7, 0x0a, 0x99, 0x1c, 0x1a, 0xf5,
-	0xa6, 0xb6, 0x53, 0xa2, 0x15, 0x15, 0x7d, 0xc6, 0xdd, 0x63, 0x26, 0x87, 0xe4, 0x73, 0xd8, 0x98,
-	0x71, 0x0d, 0x2b, 0x44, 0x61, 0x63, 0x20, 0x0d, 0xd2, 0xd4, 0x76, 0x56, 0xe9, 0xfa, 0xb4, 0x45,
-	0x1c, 0xa7, 0xc9, 0xc6, 0x0b, 0x28, 0x1c, 0xb3, 0x4b, 0x9f, 0x33, 0x87, 0x3c, 0x84, 0xbc, 0xc4,
-	0x9f, 0x53, 0x17, 0x2c, 0x75, 0x4a, 0x89, 0x3d, 0xe5, 0xc5, 0x72, 0x53, 0xeb, 0x2e, 0x51, 0x95,
-	0x20, 0x06, 0xac, 0x9c, 0x79, 0x01, 0x13, 0x97, 0xca, 0xe0, 0x2a, 0xdd, 0x25, 0x9a, 0xcd, 0x3b,
-	0x3a, 0x14, 0xc2, 0x8c, 0x72, 0xef, 0x8f, 0x37, 0xaf, 0x73, 0x5a, 0xe3, 0x55, 0x0e, 0x6a, 0x33,
-	0x1f, 0x0c, 0x21, 0x90, 0x1f, 0xf2, 0x28, 0xdb, 0x80, 0xaa, 0x31, 0xf9, 0x00, 0xf2, 0xea, 0x4c,
-	0xcb, 0x33, 0x9b, 0x52, 0x15, 0x26, 0x5f, 0x41, 0x3e, 0xc2, 0xc0, 0xc9, 0x1c, 0xf0, 0xe3, 0x05,
-	0xdd, 0x93, 0x9d, 0x84, 0x2a, 0x0d, 0xf9, 0x1a, 0x0a, 0x02, 0x6d, 0xf4, 0x46, 0x98, 0x19, 0xdf,
-	0x5d, 0xe5, 0x63, 0x19, 0xf9, 0x10, 0x2a, 0x11, 0x8a, 0x91, 0x67, 0xa3, 0x15, 0xb0, 0x0b, 0x54,
-	0x96, 0x57, 0xa2, 0xe5, 0x2c, 0xd6, 0x67, 0x17, 0x48, 0x4e, 0xe1, 0xbe, 0xc0, 0x1f, 0x63, 0x8c,
-	0x64, 0xd2, 0xee, 0x0e, 0x8a, 0xc8, 0x92, 0xdc, 0x62, 0x8e, 0x63, 0xac, 0x34, 0x73, 0x3b, 0xe5,
-	0xf6, 0xf6, 0xed, 0x7b, 0x3a, 0x28, 0x94, 0x41, 0x1d, 0x85, 0xe9, 0xc3, 0x67, 0x8c, 0x34, 0x13,
-	0x0d, 0xf8, 0xae, 0xe3, 0x90, 0xf7, 0xa1, 0x94, 0xf8, 0x5d, 0xe2, 0x31, 0x6d, 0x65, 0x75, 0x45,
-	0x5a, 0x8c, 0x23, 0x4c, 0x6e, 0xb5, 0x4d, 0xbe, 0x84, 0x07, 0xb7, 0xec, 0x2b, 0xf0, 0x82, 0x8f,
-	0xd0, 0x28, 0x36, 0x73, 0x3b, 0x25, 0x7a, 0x7f, 0x16, 0x4a, 0x55, 0xb6, 0xf1, 0xab, 0x06, 0xd5,
-	0x69, 0xbb, 0x99, 0x5c, 0xb3, 0xf6, 0x6e, 0xd7, 0xbc, 0xac, 0x8e, 0xfc, 0xb6, 0xd7, 0xdc, 0xd8,
-	0x06, 0x9d, 0xa2, 0xe3, 0x45, 0x37, 0x2b, 0xd2, 0x21, 0xf7, 0x12, 0x2f, 0xb3, 0x56, 0x49, 0x86,
-	0x8d, 0xcf, 0xa0, 0x36, 0x63, 0x64, 0x73, 0xef, 0xa3, 0xcd, 0xbd, 0x4f, 0xc3, 0x86, 0xfa, 0x9c,
-	0xa7, 0x24, 0x4d, 0x77, 0xbd, 0x7e, 0xaa, 0xe9, 0x92, 0x30, 0x69, 0xc1, 0x8a, 0xcd, 0x83, 0x73,
-	0xcf, 0xcd, 0x7e, 0xc8, 0x37, 0xe6, 0xbe, 0xd8, 0xe7, 0xea, 0xff, 0x09, 0xcd, 0x96, 0x75, 0x36,
-	0xa0, 0x7a, 0xd3, 0xeb, 0x50, 0x64, 0x5f, 0xc1, 0xd3, 0x7c, 0x11, 0xf4, 0x32, 0x25, 0x22, 0x39,
-	0xdd, 0x94, 0x1d, 0x3e, 0xa2, 0x50, 0x49, 0x2b, 0x7a, 0x2e, 0x99, 0x8c, 0x23, 0x52, 0x86, 0xc2,
-	0x49, 0xff, 0x9b, 0xfe, 0xd1, 0x77, 0x7d, 0x7d, 0x29, 0x99, 0x74, 0xf7, 0x77, 0x9f, 0x0d, 0xba,
-	0xa7, 0xba, 0x46, 0x56, 0xa1, 0x74, 0xd2, 0x1f, 0x4f, 0x97, 0x49, 0x05, 0x8a, 0x4f, 0xe8, 0x6e,
-	0xaf, 0xdf, 0xeb, 0x1f, 0xe8, 0xb9, 0x64, 0xe5, 0xa0, 0x77, 0xb8, 0x7f, 0x74, 0x32, 0xd0, 0xf3,
-	0x1d, 0xfd, 0xb7, 0xab, 0x2d, 0xed, 0xaf, 0xab, 0x2d, 0xed, 0xef, 0xab, 0x2d, 0xed, 0xdf, 0xab,
-	0x2d, 0xed, 0x6c, 0x45, 0x55, 0xfc, 0xf8, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xc2, 0xbd, 0xcf,
-	0xe7, 0xd8, 0x09, 0x00, 0x00,
+var fileDescriptor_health_check_26b7f6e44b7ba773 = []byte{
+	// 1117 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x96, 0x4d, 0x6f, 0xdb, 0x46,
+	0x13, 0xc7, 0x45, 0x49, 0xd1, 0xcb, 0x48, 0x96, 0xa8, 0x55, 0x12, 0xd3, 0x7a, 0xfc, 0x38, 0x6a,
+	0x61, 0x14, 0x82, 0x81, 0x4a, 0xad, 0x52, 0xb4, 0x48, 0x4f, 0xb5, 0x1c, 0xc7, 0x52, 0xea, 0xc8,
+	0xc6, 0x46, 0x4e, 0x61, 0xa0, 0x05, 0xb1, 0x26, 0x57, 0x14, 0x1b, 0x9a, 0xcb, 0x2e, 0x97, 0x4a,
+	0xf5, 0x25, 0x7a, 0xe8, 0xa9, 0x5f, 0xa0, 0x40, 0x91, 0x4b, 0xaf, 0x45, 0x4f, 0x39, 0xf6, 0xd8,
+	0x4b, 0xcf, 0x2d, 0x7c, 0x6a, 0xbe, 0x45, 0xc1, 0x25, 0x25, 0xeb, 0xc5, 0x85, 0x6d, 0xf4, 0xb6,
+	0x9c, 0x99, 0xff, 0x6f, 0x67, 0x76, 0x67, 0x07, 0x84, 0x6d, 0xea, 0x8e, 0xd9, 0xa4, 0x45, 0x3c,
+	0xbb, 0x35, 0x6e, 0xb7, 0x0c, 0xc6, 0x69, 0x6b, 0x44, 0x89, 0x23, 0x46, 0xba, 0x31, 0xa2, 0xc6,
+	0xcb, 0xa6, 0xc7, 0x99, 0x60, 0xa8, 0x22, 0xa3, 0x9a, 0xc4, 0xb3, 0x9b, 0xe3, 0x76, 0x33, 0x8c,
+	0xaa, 0x6d, 0xae, 0x0a, 0xcf, 0x88, 0x4f, 0x23, 0x41, 0x6d, 0xc3, 0x62, 0xcc, 0x72, 0x68, 0x4b,
+	0x7e, 0x9d, 0x05, 0xc3, 0x16, 0x71, 0x27, 0xb1, 0x6b, 0x6b, 0xd9, 0x65, 0x06, 0x9c, 0x08, 0x9b,
+	0xb9, 0xb1, 0x7f, 0x73, 0xd9, 0xef, 0x0b, 0x1e, 0x18, 0xe2, 0xdf, 0xd4, 0xaf, 0x38, 0xf1, 0x3c,
+	0xca, 0xfd, 0xd8, 0xbf, 0x3e, 0x26, 0x8e, 0x6d, 0x12, 0x41, 0x5b, 0xd3, 0x45, 0xec, 0xb8, 0x6b,
+	0x31, 0x8b, 0xc9, 0x65, 0x2b, 0x5c, 0x45, 0xd6, 0x77, 0xff, 0x40, 0x50, 0xe8, 0xca, 0x7a, 0xf7,
+	0xc2, 0x72, 0xd1, 0x3e, 0x64, 0x85, 0x7d, 0x4e, 0x59, 0x20, 0x34, 0xa5, 0xae, 0x34, 0x0a, 0xed,
+	0x8d, 0x66, 0xb4, 0x61, 0x73, 0xba, 0x61, 0xf3, 0x71, 0x9c, 0x6e, 0x47, 0xfd, 0xe1, 0xcf, 0x07,
+	0xca, 0xaf, 0x6f, 0xdf, 0xa4, 0xb2, 0xaf, 0x95, 0x74, 0x4e, 0xd9, 0x49, 0xe0, 0xa9, 0x16, 0x1d,
+	0x40, 0xce, 0x76, 0x05, 0xe5, 0x63, 0xe2, 0x68, 0xc9, 0xdb, 0x73, 0x66, 0x62, 0xd4, 0x81, 0xf2,
+	0x74, 0xad, 0x7f, 0x6d, 0x0b, 0x41, 0xb9, 0x96, 0xba, 0x86, 0x87, 0x4b, 0x53, 0xc5, 0x53, 0x29,
+	0x40, 0xcf, 0xa0, 0x1a, 0xb8, 0xd1, 0xa5, 0x4e, 0x74, 0x31, 0xe2, 0xd4, 0x1f, 0x31, 0xc7, 0xd4,
+	0xd2, 0x92, 0xb3, 0xb9, 0xc2, 0x39, 0xe9, 0xb9, 0xe2, 0x61, 0xfb, 0x05, 0x71, 0x02, 0x8a, 0xd1,
+	0x4c, 0x38, 0x98, 0xea, 0x50, 0x0f, 0x2a, 0xab, 0xb0, 0x3b, 0x37, 0x80, 0xa9, 0x2b, 0xa8, 0x4f,
+	0x20, 0x47, 0x1c, 0xa1, 0x7b, 0x8c, 0x0b, 0x2d, 0x73, 0x03, 0x42, 0x96, 0x38, 0xe2, 0x98, 0x71,
+	0x81, 0xf6, 0x41, 0xe5, 0x34, 0xf0, 0xa9, 0x6e, 0x30, 0xd7, 0xa5, 0x46, 0x58, 0xb6, 0x96, 0x95,
+	0x80, 0xda, 0x0a, 0xa0, 0xc3, 0x98, 0x13, 0xc9, 0xcb, 0x52, 0xb3, 0x37, 0x93, 0xa0, 0x2f, 0xa1,
+	0x32, 0x12, 0xc2, 0xd3, 0xe7, 0x3b, 0x5e, 0xcb, 0x49, 0x4e, 0xb3, 0xb9, 0xd2, 0xf2, 0xcd, 0xb9,
+	0x46, 0x69, 0x76, 0x85, 0xf0, 0xe6, 0xbe, 0xbb, 0x09, 0x5c, 0x1e, 0x2d, 0x9a, 0xd0, 0x29, 0xa8,
+	0xc2, 0x58, 0x82, 0xe7, 0x25, 0xfc, 0xfd, 0x6b, 0xe0, 0x03, 0x63, 0x89, 0x5d, 0x12, 0x0b, 0x96,
+	0x30, 0x71, 0x8b, 0x7b, 0xc6, 0x22, 0xbb, 0x70, 0xa3, 0xc4, 0x0f, 0xb8, 0x67, 0x2c, 0x25, 0x6e,
+	0x2d, 0x9a, 0xd0, 0x09, 0x54, 0x5d, 0xa6, 0x0b, 0x4e, 0x86, 0x43, 0xdb, 0xd0, 0x67, 0x8d, 0x5c,
+	0xbc, 0xae, 0x91, 0x21, 0x6c, 0xe2, 0x3b, 0xaf, 0x95, 0xe4, 0x4e, 0x02, 0x57, 0x5c, 0x36, 0x88,
+	0x00, 0xbd, 0x69, 0x2f, 0x9f, 0x41, 0xd5, 0x08, 0x7c, 0xc1, 0xce, 0x17, 0xd3, 0x5e, 0x93, 0xd8,
+	0x0f, 0xae, 0x49, 0x7b, 0x4f, 0x2a, 0x17, 0x13, 0xaf, 0x18, 0xcb, 0x46, 0x34, 0x80, 0xcb, 0x96,
+	0xbd, 0xcc, 0xbc, 0x74, 0xab, 0xcc, 0x67, 0x80, 0x59, 0xe6, 0x5f, 0xc1, 0xfa, 0x25, 0x95, 0x9a,
+	0x16, 0xbd, 0x44, 0x97, 0x6f, 0x83, 0xbe, 0x37, 0xa3, 0xec, 0x9b, 0x16, 0x9d, 0xe1, 0x4f, 0xe1,
+	0xde, 0xd5, 0x70, 0xf5, 0x36, 0xf0, 0xea, 0x55, 0xe8, 0x6d, 0x28, 0xd1, 0x31, 0x75, 0x85, 0xee,
+	0x30, 0x4b, 0xf7, 0x88, 0x18, 0x69, 0x95, 0xba, 0xd2, 0xc8, 0xe3, 0xa2, 0xb4, 0x1e, 0x32, 0xeb,
+	0x98, 0x88, 0x11, 0xfa, 0x18, 0xd6, 0x97, 0xa6, 0x8c, 0xee, 0x51, 0x6e, 0x50, 0x57, 0x68, 0xa8,
+	0xae, 0x34, 0xd6, 0xf0, 0xbd, 0xc5, 0x91, 0x72, 0x1c, 0x39, 0xd1, 0x13, 0xa8, 0x13, 0xe7, 0x15,
+	0x99, 0xf8, 0x12, 0x3f, 0x7f, 0xab, 0xfa, 0x90, 0xd8, 0x4e, 0xc0, 0xa9, 0xaf, 0x55, 0xeb, 0x4a,
+	0x23, 0x87, 0x37, 0xa3, 0xb8, 0x43, 0x66, 0xcd, 0xdd, 0xd6, 0x93, 0x38, 0xa6, 0xf6, 0x02, 0xb2,
+	0xc7, 0x64, 0xe2, 0x30, 0x62, 0xa2, 0x07, 0x90, 0x16, 0xf4, 0xdb, 0x68, 0xfa, 0xe6, 0x3b, 0xf9,
+	0xb0, 0xbe, 0x34, 0x4f, 0xd6, 0x95, 0x6e, 0x02, 0x4b, 0x07, 0xd2, 0x20, 0x73, 0x66, 0xbb, 0x84,
+	0x4f, 0xe4, 0x60, 0x2d, 0x76, 0x13, 0x38, 0xfe, 0xee, 0xa8, 0x90, 0xf5, 0x62, 0xca, 0x9d, 0x5f,
+	0xde, 0xbe, 0x49, 0x29, 0xb5, 0x1f, 0x53, 0x50, 0x5e, 0x7a, 0xa8, 0x08, 0x41, 0x7a, 0xc4, 0xfc,
+	0x78, 0x03, 0x2c, 0xd7, 0xe8, 0xff, 0x90, 0x96, 0x67, 0x93, 0x5c, 0xda, 0x14, 0x4b, 0x33, 0xfa,
+	0x14, 0xd2, 0x3e, 0x75, 0xcd, 0x78, 0xf2, 0xbe, 0x77, 0x4d, 0xa7, 0xc6, 0x95, 0x60, 0xa9, 0x41,
+	0x9f, 0x41, 0x96, 0x53, 0x83, 0xda, 0x63, 0x1a, 0x0f, 0xdc, 0x9b, 0xca, 0xa7, 0x32, 0xf4, 0x0e,
+	0x14, 0x7d, 0xca, 0xc7, 0xb6, 0x41, 0x75, 0x97, 0x9c, 0x53, 0x39, 0x6a, 0xf3, 0xb8, 0x10, 0xdb,
+	0xfa, 0xe4, 0x9c, 0xa2, 0x21, 0xdc, 0xe7, 0xf4, 0x9b, 0x80, 0xfa, 0x22, 0xbc, 0x04, 0x93, 0x72,
+	0x5f, 0x17, 0x4c, 0x27, 0xa6, 0xa9, 0x65, 0xea, 0xa9, 0x46, 0xa1, 0xbd, 0x7d, 0xf5, 0x9e, 0x26,
+	0xe5, 0x72, 0x30, 0x1e, 0x79, 0xb2, 0x99, 0x0a, 0x61, 0xdd, 0x99, 0xef, 0x95, 0x94, 0xfa, 0x77,
+	0x16, 0x57, 0x63, 0x60, 0x14, 0xe6, 0x0f, 0xd8, 0xae, 0x69, 0xa2, 0xff, 0x41, 0x3e, 0x1c, 0xba,
+	0xe1, 0xa0, 0x6b, 0xcb, 0x79, 0x9b, 0xc3, 0xb9, 0xc0, 0xa7, 0xe1, 0x11, 0xb7, 0xd1, 0x23, 0xd8,
+	0xb8, 0x22, 0x09, 0x4e, 0xcf, 0xd9, 0x98, 0x6a, 0xb9, 0x7a, 0xaa, 0x91, 0xc7, 0xf7, 0x97, 0xa1,
+	0x58, 0x7a, 0x6b, 0xdf, 0x29, 0x50, 0x5a, 0x9c, 0x79, 0xb3, 0x33, 0x57, 0xfe, 0xdb, 0x99, 0x27,
+	0x65, 0xfd, 0xb7, 0x3d, 0xf3, 0xda, 0x36, 0xa8, 0x98, 0x9a, 0xb6, 0x3f, 0x9f, 0x91, 0x0a, 0xa9,
+	0x97, 0x74, 0x12, 0xf7, 0x4d, 0xb8, 0xac, 0x7d, 0x04, 0xe5, 0xa5, 0x69, 0xba, 0x72, 0x59, 0xca,
+	0xca, 0x65, 0xd5, 0x7e, 0x56, 0xa0, 0xb2, 0x32, 0xcd, 0xc2, 0x16, 0xbc, 0x14, 0x2c, 0xb4, 0x60,
+	0x68, 0x46, 0x1f, 0x42, 0xc6, 0x60, 0xee, 0xd0, 0xb6, 0xe2, 0xdf, 0x89, 0xf5, 0x95, 0x99, 0xf0,
+	0x5c, 0xfe, 0x25, 0x85, 0xcf, 0x21, 0x0a, 0x44, 0x8f, 0xa0, 0x28, 0x26, 0x1e, 0x35, 0xf5, 0x58,
+	0x18, 0x75, 0xef, 0xdd, 0x15, 0xe1, 0xae, 0x3b, 0xe9, 0x26, 0x70, 0x41, 0xc6, 0xee, 0xc9, 0xd0,
+	0xce, 0x1a, 0x14, 0x22, 0x91, 0x1e, 0x5a, 0x3b, 0xeb, 0x50, 0x9a, 0x7f, 0xdb, 0x94, 0xc7, 0xef,
+	0xeb, 0x69, 0x3a, 0x07, 0x6a, 0x01, 0x23, 0x1e, 0x1e, 0xd5, 0xc2, 0xf3, 0xdf, 0xc1, 0x50, 0x8c,
+	0xaa, 0x7b, 0x2e, 0x88, 0x08, 0x7c, 0x54, 0x80, 0xec, 0x49, 0xff, 0xf3, 0xfe, 0xd1, 0x17, 0x7d,
+	0x35, 0x11, 0x7e, 0x74, 0xf7, 0x77, 0x0f, 0x07, 0xdd, 0x53, 0x55, 0x41, 0x6b, 0x90, 0x3f, 0xe9,
+	0x4f, 0x3f, 0x93, 0xa8, 0x08, 0xb9, 0xc7, 0x78, 0xb7, 0xd7, 0xef, 0xf5, 0x0f, 0xd4, 0x54, 0x18,
+	0x39, 0xe8, 0x3d, 0xdb, 0x3f, 0x3a, 0x19, 0xa8, 0xe9, 0x8e, 0xfa, 0xd3, 0xc5, 0x96, 0xf2, 0xdb,
+	0xc5, 0x96, 0xf2, 0xfb, 0xc5, 0x96, 0xf2, 0xd7, 0xc5, 0x96, 0x72, 0x96, 0x91, 0x45, 0x3c, 0xfc,
+	0x27, 0x00, 0x00, 0xff, 0xff, 0x50, 0x61, 0x75, 0x67, 0xc5, 0x0a, 0x00, 0x00,
 }
