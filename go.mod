@@ -1,5 +1,7 @@
 module github.com/cookpad/itacho
 
+go 1.14
+
 require (
 	github.com/aws/aws-sdk-go v1.15.78
 	github.com/envoyproxy/go-control-plane v0.6.4
