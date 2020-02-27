@@ -1,4 +1,4 @@
-FROM ruby:2.4
+FROM ruby:2.6
 
 RUN mkdir /app
 COPY Gemfile Gemfile.lock /app/
