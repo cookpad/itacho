@@ -1,0 +1,179 @@
+{
+  "version_info": "test",
+  "resources": [
+    {
+      "@type": "type.googleapis.com/envoy.api.v2.RouteConfiguration",
+      "name": "default",
+      "virtual_hosts": [
+        {
+          "name": "user",
+          "domains": [
+            "user"
+          ],
+          "routes": [
+            {
+              "match": {
+                "path": "/ping"
+              },
+              "route": {
+                "cluster": "user-development",
+                "host_rewrite": "user-service",
+                "timeout": "0.100s"
+              }
+            },
+            {
+              "match": {
+                "prefix": "/",
+                "headers": [
+                  {
+                    "name": ":method",
+                    "regex_match": "(GET|HEAD)"
+                  }
+                ]
+              },
+              "route": {
+                "cluster": "user-development",
+                "host_rewrite": "user-service",
+                "timeout": "3s",
+                "retry_policy": {
+                  "retry_on": "5xx,connect-failure,refused-stream",
+                  "num_retries": 3,
+                  "per_try_timeout": "1s"
+                }
+              }
+            },
+            {
+              "match": {
+                "prefix": "/"
+              },
+              "route": {
+                "cluster": "user-development",
+                "host_rewrite": "user-service",
+                "timeout": "3s"
+              }
+            }
+          ],
+          "request_headers_to_add": [
+            {
+              "header": {
+                "key": "X-Test",
+                "value": "abc"
+              }
+            }
+          ]
+        },
+        {
+          "name": "ab-testing",
+          "domains": [
+            "ab-testing"
+          ],
+          "routes": [
+            {
+              "match": {
+                "path": "/grpc.health.v1.Health/Check",
+                "headers": [
+                  {
+                    "name": ":method",
+                    "exact_match": "POST"
+                  }
+                ]
+              },
+              "route": {
+                "cluster": "ab-testing-development",
+                "auto_host_rewrite": true,
+                "timeout": "3s",
+                "retry_policy": {
+                  "retry_on": "5xx,connect-failure,refused-stream,cancelled,deadline-exceeded,resource-exhausted",
+                  "num_retries": 3,
+                  "per_try_timeout": "0.700s"
+                }
+              }
+            },
+            {
+              "match": {
+                "prefix": "/",
+                "headers": [
+                  {
+                    "name": ":method",
+                    "regex_match": "(GET|HEAD)"
+                  }
+                ]
+              },
+              "route": {
+                "cluster": "ab-testing-development",
+                "auto_host_rewrite": true,
+                "timeout": "3s",
+                "retry_policy": {
+                  "retry_on": "5xx,connect-failure,refused-stream",
+                  "num_retries": 3,
+                  "per_try_timeout": "1s"
+                }
+              }
+            },
+            {
+              "match": {
+                "prefix": "/"
+              },
+              "route": {
+                "cluster": "ab-testing-development",
+                "auto_host_rewrite": true,
+                "timeout": "3s"
+              }
+            }
+          ]
+        },
+        {
+          "name": "fault-user",
+          "domains": [
+            "fault-user"
+          ],
+          "routes": [
+            {
+              "match": {
+                "prefix": "/",
+                "headers": [
+                  {
+                    "name": ":method",
+                    "regex_match": "(GET|HEAD)"
+                  }
+                ]
+              },
+              "route": {
+                "cluster": "fault-user-development",
+                "host_rewrite": "fault-user-service",
+                "timeout": "3s",
+                "retry_policy": {
+                  "retry_on": "5xx,connect-failure,refused-stream",
+                  "num_retries": 3,
+                  "per_try_timeout": "1s"
+                }
+              }
+            },
+            {
+              "match": {
+                "prefix": "/"
+              },
+              "route": {
+                "cluster": "fault-user-development",
+                "host_rewrite": "fault-user-service",
+                "timeout": "3s"
+              }
+            }
+          ],
+          "per_filter_config": {
+            "envoy.fault": {
+              "abort": {
+                "http_status": 503,
+                "percentage": {
+                  "denominator": "HUNDRED",
+                  "numerator": 100
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "type_url": "type.googleapis.com/envoy.api.v2.RouteConfiguration"
+}
