@@ -2,7 +2,7 @@ FROM golang:1.11 as build
 
 RUN mkdir /app
 WORKDIR /app
-COPY go.mod go.sum vendor /app/
+COPY go.mod go.sum /app/
 RUN go mod download
 
 COPY . /app/
