@@ -49,7 +49,7 @@ const (
 )
 
 // ExtractNodeCluster returns cluster value from Node proto message
-func ExtractNodeCluster(node *core.Node) string {
+func ExtractNodeCluster(node *envoy_api_v2_core.Node) string {
 	if node == nil {
 		return "unknown"
 	}
