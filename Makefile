@@ -34,12 +34,6 @@ gen_legacy:
 	  --eds-cluster sds --use-legacy-sds
 	@./itacho generate -s example/book.jsonnet -o test/srv -t RDS -v "$(shell git rev-parse HEAD)"
 
-.PHONY: vendor
-vendor:
-	@echo "--> vendoring modules"
-	@go mod vendor
-	@modvendor -copy="**/*.c **/*.h **/*.proto" -v
-
 .PHONY: integration_test
 .ONESHEL: integration_test
 integration_test: build gen_legacy
