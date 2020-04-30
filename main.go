@@ -8,9 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 
-	"github.com/cookpad/itacho/generator"
 	"github.com/cookpad/itacho/server"
-	"github.com/cookpad/itacho/xds"
 )
 
 const progName = "itacho"
@@ -26,38 +24,6 @@ func main() {
 	app.Usage = "itacho to manange and operate envoy based service mesh"
 	app.Version = version
 	app.Commands = []cli.Command{
-		{
-			Name:    "generate",
-			Aliases: []string{"g"},
-			Usage:   "generate xDS response",
-			Action:  generate,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "source, s",
-					Usage: "load service definition from `FILE`",
-				},
-				cli.StringFlag{
-					Name:  "output, o",
-					Usage: "write xDS response flagment into `DIR`",
-				},
-				cli.StringFlag{
-					Name:  "type, t",
-					Usage: "xDS response type. Currently supported types are: CDS, RDS",
-				},
-				cli.StringFlag{
-					Name:  "version, v",
-					Usage: "specify version of generated xDS response (e.g. Git sha)",
-				},
-				cli.BoolFlag{
-					Name:  "use-legacy-sds",
-					Usage: "[optional] use legacy v1 SDS instead of v2 EDS. Default `false`",
-				},
-				cli.StringFlag{
-					Name:  "eds-cluster",
-					Usage: "cluster name for EDS cluster which will be configured statically in Envoy bootstrap config",
-				},
-			},
-		},
 		{
 			Name:    "server",
 			Aliases: []string{"s"},
@@ -93,53 +59,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func generate(ctx *cli.Context) error {
-	opts := generator.Opts{}
-
-	source := ctx.String("source")
-	if len(source) < 1 {
-		return buildEmptyFlagError("source")
-	}
-	opts.SourcePath = source
-
-	output := ctx.String("output")
-	if len(output) < 1 {
-		return buildEmptyFlagError("output")
-	}
-	opts.OutputDir = output
-
-	version := ctx.String("version")
-	if len(version) < 1 {
-		return buildEmptyFlagError("version")
-	}
-	opts.Version = version
-
-	t := ctx.String("type")
-	if len(t) < 1 {
-		return buildEmptyFlagError("type")
-	}
-	if t == "CDS" {
-		opts.Type = xds.CDS
-
-		edsCluster := ctx.String("eds-cluster")
-		if len(edsCluster) < 1 {
-			return buildEmptyFlagError("eds-cluster")
-		}
-		opts.EdsCluster = edsCluster
-	} else if t == "RDS" {
-		opts.Type = xds.RDS
-	} else {
-		return buildFlagError("type", "value must be either `CDS` or `RDS`")
-	}
-
-	legacySds := ctx.Bool("use-legacy-sds")
-	if legacySds {
-		opts.LegacySds = true
-	}
-
-	return generator.Generate(opts)
 }
 
 func serverCmd(ctx *cli.Context) error {
