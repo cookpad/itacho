@@ -27,6 +27,7 @@ integration_test:
 	@pushd test && \
 	  docker-compose down && \
 	  docker-compose up --build -d && \
-	  ruby test.rb && \
+	  bundle install && \
+	  bundle exec ruby test.rb && \
 	  docker-compose down && \
 	  popd
