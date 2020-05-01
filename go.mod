@@ -1,5 +1,7 @@
 module github.com/cookpad/itacho
 
+go 1.14
+
 require (
 	github.com/envoyproxy/go-control-plane v0.6.4
 	github.com/gogo/googleapis v1.1.0 // indirect
