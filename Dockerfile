@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/golang:1.14 as build
+FROM public.ecr.aws/docker/library/golang:1.20 as build
 
 RUN mkdir /app
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY . /app/
 RUN go mod verify && make
 
 
-FROM public.ecr.aws/ubuntu/ubuntu:18.04
+FROM public.ecr.aws/ubuntu/ubuntu:22.04
 
 RUN apt-get update && \
       apt-get install -y ca-certificates && \

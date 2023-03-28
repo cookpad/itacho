@@ -1,13 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    google-protobuf (3.19.2)
-    googleapis-common-protos-types (1.0.5)
-      google-protobuf (~> 3.11)
-    grpc (1.28.0)
-      google-protobuf (~> 3.11)
+    google-protobuf (3.22.2)
+    googleapis-common-protos-types (1.5.0)
+      google-protobuf (~> 3.14)
+    grpc (1.53.0)
+      google-protobuf (~> 3.21)
       googleapis-common-protos-types (~> 1.0)
-    rack (2.2.6.3)
+    rack (3.0.7)
 
 PLATFORMS
   ruby
@@ -17,4 +17,4 @@ DEPENDENCIES
   rack
 
 BUNDLED WITH
-   1.17.2
+   2.4.1
