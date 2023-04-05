@@ -44,8 +44,9 @@
       "eds_cluster_config": {
         "eds_config": {
           "api_config_source": {
+            "api_type": "REST",
             "cluster_names": [
-              "sds"
+              "eds"
             ],
             "refresh_delay": "5s"
           }

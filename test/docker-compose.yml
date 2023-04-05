@@ -38,15 +38,8 @@ services:
       - './srv:/srv:ro'
     ports:
       - '3080:80'
-  sds:
-    image: 'taiki45/discovery'
-    environment:
-      BACKEND_STORAGE: InMemory
-      APPLICATION_ENV: development
-      DEBUG: 'true'
-      LOG_LEVEL: DEBUG
-      PORT: 8080
-      CACHE_TYPE: simple
+  eds:
+    build: 'eds'
     ports:
       - '4000:8080'
   prometheus:
@@ -68,7 +61,7 @@ services:
       - 'ab-testing-app'
       - 'nginx'
       - 'statsd-exporter'
-      - 'sds'
+      - 'eds'
     volumes:
       - './config.yaml:/config.yaml:ro'
     expose:

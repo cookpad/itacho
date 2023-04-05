@@ -20,7 +20,7 @@ end
 
 envoy_url = URI('http://localhost:9211')
 app_url = URI('http://localhost:3081')
-sds_url = URI('http://localhost:4000')
+eds_url = URI('http://localhost:4000')
 ab_testing_app = nil
 
 catch(:break) do
@@ -46,14 +46,14 @@ catch(:break) do
   i = 0
   loop do
     begin
-      Net::HTTP.start(sds_url.host, sds_url.port) do |http|
+      Net::HTTP.start(eds_url.host, eds_url.port) do |http|
         http.get('/v1/registration/dummy')
         throw(:break)
       end
     rescue EOFError, SystemCallError
       raise('Can not run the app container') if i == 19 # Overall retries end within 3.8s.
 
-      puts 'waiting the sds container to run...'
+      puts 'waiting the eds container to run...'
       sleep((2 * i) / 100.0)
       i += 1
     end
@@ -78,8 +78,8 @@ catch(:break) do
   end
 end
 
-puts 'register hosts to legacy sds'
-Net::HTTP.start(sds_url.host, sds_url.port) do |http|
+puts 'register hosts to legacy eds'
+Net::HTTP.start(eds_url.host, eds_url.port) do |http|
   payload = { ip: ab_testing_app, port: 8080, revision: 'a', tags: { az: 'b', region: 'ap-northeast-1', instance_id: 'test-instance' }.to_json }
   response = http.post('/v1/registration/ab-testing-development', payload.map { |k, v| "#{k}=#{CGI.escape(v.to_s)}" }.join('&'))
   puts response.code, response.body
@@ -113,7 +113,7 @@ Net::HTTP.start(envoy_url.host, envoy_url.port) do |http|
 
       raise('Can not fetch healty upstreams') if i > 30
 
-      puts 'waiting the envoy to fetch from SDS...'
+      puts 'waiting the envoy to fetch from EDS...'
       sleep((2 * i) / 100.0)
       i += 1
     end
