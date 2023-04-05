@@ -27,7 +27,10 @@
                 "headers": [
                   {
                     "name": ":method",
-                    "regex_match": "(GET|HEAD)"
+                    "safe_regex_match": {
+                      "google_re2": {},
+                      "regex": "(GET|HEAD)"
+                    }
                   }
                 ]
               },
@@ -95,7 +98,10 @@
                 "headers": [
                   {
                     "name": ":method",
-                    "regex_match": "(GET|HEAD)"
+                    "safe_regex_match": {
+                      "google_re2": {},
+                      "regex": "(GET|HEAD)"
+                    }
                   }
                 ]
               },
@@ -134,7 +140,10 @@
                 "headers": [
                   {
                     "name": ":method",
-                    "regex_match": "(GET|HEAD)"
+                    "safe_regex_match": {
+                      "google_re2": {},
+                      "regex": "(GET|HEAD)"
+                    }
                   }
                 ]
               },
