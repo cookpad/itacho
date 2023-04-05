@@ -38,17 +38,6 @@ static_resources:
                 http_status: 503
           - name: envoy.router
   clusters:
-  - name: nginx
-    type: STRICT_DNS
-    hosts:
-    - socket_address:
-        address: nginx
-        port_value: 80
-    lb_policy: ROUND_ROBIN
-    connect_timeout:
-      seconds: 0
-      nanos: 100000000
-    dns_lookup_family: V4_ONLY
   - name: itacho
     type: STRICT_DNS
     hosts:
