@@ -10,6 +10,8 @@ import (
 
 	"github.com/cookpad/itacho/storage"
 	"github.com/cookpad/itacho/xds"
+	v2xds "github.com/cookpad/itacho/xds/v2"
+	v3xds "github.com/cookpad/itacho/xds/v3"
 )
 
 // XdsHandler for http requests.
@@ -31,13 +33,24 @@ func (h *xdsHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	var typeURL string
 	var t xds.ResponseType
+	var v xds.APIVersion
 	switch p {
 	case "/v2/discovery:clusters":
-		typeURL = xds.ClusterType
+		typeURL = v2xds.ClusterType
 		t = xds.CDS
+		v = xds.V2
 	case "/v2/discovery:routes":
-		typeURL = xds.RouteType
+		typeURL = v2xds.RouteType
 		t = xds.RDS
+		v = xds.V2
+	case "/v3/discovery:clusters":
+		typeURL = v3xds.ClusterType
+		t = xds.CDS
+		v = xds.V3
+	case "/v3/discovery:routes":
+		typeURL = v3xds.RouteType
+		t = xds.RDS
+		v = xds.V3
 	default:
 		http.Error(w, "no endpoint", http.StatusNotFound)
 		return
@@ -52,16 +65,29 @@ func (h *xdsHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "cannot read body", http.StatusBadRequest)
 		return
 	}
-	xdsReq, err := xds.UnmarshalDiscoveryRequest(typeURL, &body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+
+	var nodeCluster string
+	switch v {
+	case xds.V2:
+		xdsReq, err := v2xds.UnmarshalDiscoveryRequest(typeURL, &body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		nodeCluster = v2xds.ExtractNodeCluster(xdsReq.GetNode())
+	case xds.V3:
+		xdsReq, err := v3xds.UnmarshalDiscoveryRequest(typeURL, &body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		nodeCluster = v3xds.ExtractNodeCluster(xdsReq.GetNode())
 	}
 
-	nodeCluster := xds.ExtractNodeCluster(xdsReq.GetNode())
 	log.Infof("nodeCluster=%s", nodeCluster)
-
-	code, jsonStr, err := h.storage.Fetch(t, nodeCluster)
+	code, jsonStr, err := h.storage.Fetch(t, v, nodeCluster)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Failed to get content from object storage: %s", err), http.StatusInternalServerError)
 		return
