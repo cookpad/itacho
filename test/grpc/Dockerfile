@@ -1,4 +1,4 @@
-FROM public.ecr.aws/sorah/ruby:3.2-jammy
+FROM public.ecr.aws/sorah/ruby:3.2-dev-jammy
 
 RUN mkdir /app
 COPY Gemfile Gemfile.lock /app/
