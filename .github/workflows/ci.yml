@@ -13,12 +13,19 @@ on:
 jobs:
   integration_test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        envoy_api_version:
+          - V2
+          - V3
     steps:
       - uses: actions/checkout@v3
       - uses: ruby/setup-ruby@v1
         with:
           working-directory: test
       - run: make integration_test
+        env:
+          ENVOY_API_VERSION: ${{ matrix.envoy_api_version }}
   build:
     runs-on: ubuntu-latest
     needs:
