@@ -15,8 +15,10 @@ For further detail, see `itacho --help` and `itacho ${sub_cmd} --help`.
 ## Design notes
 ### Object storage path convention
 
-- Cluster: `GET /v2/discovery/clusters/${node_cluster}`
-- Route: `GET /v2/discovery/routes/${node_cluster}`
+- Cluster (v2): `GET /v2/discovery/clusters/${node_cluster}`
+- Route (v2): `GET /v2/discovery/routes/${node_cluster}`
+- Cluster (v3): `GET /v3/discovery/clusters/${node_cluster}`
+- Route (v3): `GET /v3/discovery/routes/${node_cluster}`
 
 ## Development
 ### build proto files

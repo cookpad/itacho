@@ -1,0 +1,145 @@
+{
+  "version_info": "test",
+  "resources": [
+    {
+      "@type": "type.googleapis.com/envoy.config.cluster.v3.Cluster",
+      "name": "user-development",
+      "type": "STRICT_DNS",
+      "connect_timeout": "0.250s",
+      "load_assignment": {
+        "cluster_name": "user-development",
+        "endpoints": [
+          {
+            "lb_endpoints": [
+              {
+                "endpoint": {
+                  "address": {
+                    "socket_address": {
+                      "address": "user-app",
+                      "port_value": 8080
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "circuit_breakers": {
+        "thresholds": [
+          {
+            "max_connections": 64,
+            "max_pending_requests": 128,
+            "max_retries": 3
+          }
+        ]
+      },
+      "dns_lookup_family": "V4_ONLY",
+      "typed_extension_protocol_options": {
+        "envoy.extensions.upstreams.http.v3.HttpProtocolOptions": {
+          "@type": "type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions",
+          "use_downstream_protocol_config": {}
+        }
+      }
+    },
+    {
+      "@type": "type.googleapis.com/envoy.config.cluster.v3.Cluster",
+      "name": "ab-testing-development",
+      "type": "EDS",
+      "eds_cluster_config": {
+        "eds_config": {
+          "resource_api_version": "V3",
+          "api_config_source": {
+            "transport_api_version": "V3",
+            "api_type": "REST",
+            "cluster_names": [
+              "eds"
+            ],
+            "refresh_delay": "5s"
+          }
+        }
+      },
+      "connect_timeout": "0.250s",
+      "health_checks": [
+        {
+          "timeout": "3s",
+          "interval": "10s",
+          "unhealthy_threshold": 3,
+          "healthy_threshold": 3,
+          "grpc_health_check": {
+            "service_name": "ab-testing"
+          },
+          "no_traffic_interval": "30s",
+          "unhealthy_interval": "5s",
+          "unhealthy_edge_interval": "1s",
+          "healthy_edge_interval": "1s",
+          "event_log_path": "/dev/stderr",
+          "always_log_health_check_failures": true
+        }
+      ],
+      "circuit_breakers": {
+        "thresholds": [
+          {
+            "max_connections": 64,
+            "max_pending_requests": 128,
+            "max_retries": 3
+          }
+        ]
+      },
+      "outlier_detection": {
+        "consecutive_5xx": 3
+      },
+      "typed_extension_protocol_options": {
+        "envoy.extensions.upstreams.http.v3.HttpProtocolOptions": {
+          "@type": "type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions",
+          "explicit_http_config": {
+            "http2_protocol_options": {}
+          }
+        }
+      },
+      "drain_connections_on_host_removal": true
+    },
+    {
+      "@type": "type.googleapis.com/envoy.config.cluster.v3.Cluster",
+      "name": "fault-user-development",
+      "type": "STRICT_DNS",
+      "connect_timeout": "0.250s",
+      "load_assignment": {
+        "cluster_name": "fault-user-development",
+        "endpoints": [
+          {
+            "lb_endpoints": [
+              {
+                "endpoint": {
+                  "address": {
+                    "socket_address": {
+                      "address": "user-app",
+                      "port_value": 8080
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "circuit_breakers": {
+        "thresholds": [
+          {
+            "max_connections": 64,
+            "max_pending_requests": 128,
+            "max_retries": 3
+          }
+        ]
+      },
+      "dns_lookup_family": "V4_ONLY",
+      "typed_extension_protocol_options": {
+        "envoy.extensions.upstreams.http.v3.HttpProtocolOptions": {
+          "@type": "type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions",
+          "use_downstream_protocol_config": {}
+        }
+      }
+    }
+  ],
+  "type_url": "type.googleapis.com/envoy.config.cluster.v3.Cluster"
+}

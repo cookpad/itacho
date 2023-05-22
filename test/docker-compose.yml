@@ -63,7 +63,9 @@ services:
       - 'statsd-exporter'
       - 'eds'
     volumes:
-      - './config.yaml:/config.yaml:ro'
+      - './config.yaml.erb:/config.yaml.erb:ro'
+    environment:
+      ENVOY_API_VERSION: '${ENVOY_API_VERSION:-V2}'
     expose:
       - '9211' # service port
       - '9901' # admin port

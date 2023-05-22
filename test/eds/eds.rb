@@ -8,10 +8,14 @@ Entry = Data.define(:ip, :port)
 
 # Mock EDS API
 use Rack::PostBodyContentTypeParser
-post '/v2/discovery\:endpoints' do
+post '/:version/discovery\:endpoints' do
+  type = {
+    'v2' => 'type.googleapis.com/envoy.api.v2.ClusterLoadAssignment',
+    'v3' => 'type.googleapis.com/envoy.config.endpoint.v3.ClusterLoadAssignment',
+  }.fetch(params[:version])
   resources = (params[:resource_names] || []).map do |resource_name|
     {
-      '@type': 'type.googleapis.com/envoy.api.v2.ClusterLoadAssignment',
+      '@type': type,
       cluster_name: resource_name,
       endpoints: [{
         lb_endpoints: REGISTRY.fetch(resource_name, []).map { |entry|
