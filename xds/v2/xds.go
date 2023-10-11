@@ -1,6 +1,7 @@
 package xds
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/envoyproxy/go-control-plane/envoy/api/v2"
@@ -29,7 +30,8 @@ func ExtractNodeCluster(node *envoy_api_v2_core.Node) string {
 // UnmarshalDiscoveryRequest build Envoy's DiscoveryRequest proto message from JSON string
 func UnmarshalDiscoveryRequest(typeURL string, body *[]byte) (*envoy_api_v2.DiscoveryRequest, error) {
 	req := &envoy_api_v2.DiscoveryRequest{}
-	if err := jsonpb.UnmarshalString(string(*body), req); err != nil {
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err := unmarshaler.Unmarshal(bytes.NewReader(*body), req); err != nil {
 		return nil, fmt.Errorf("Failed parse JSON body: %s", err)
 	}
 	req.TypeUrl = typeURL
