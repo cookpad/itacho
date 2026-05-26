@@ -1,6 +1,8 @@
 require 'resolv'
 require 'sinatra'
 
+set :host_authorization, { permitted_hosts: [] }
+
 get '/' do
   sleep ENV['SLEEP'].to_f
   raise 'error' if ENV['ERROR_RATE'] && rand(0..ENV['ERROR_RATE'].to_i).zero?

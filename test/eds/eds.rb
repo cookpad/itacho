@@ -3,6 +3,8 @@ require 'sinatra/json'
 require 'rack/contrib/post_body_content_type_parser'
 require 'securerandom'
 
+set :host_authorization, { permitted_hosts: [] }
+
 REGISTRY = {}
 Entry = Data.define(:ip, :port)
 
