@@ -4,7 +4,7 @@ lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'grpc'
-require 'health_services_pb'
+require 'grpc/health/v1/health_services_pb'
 
 class HealthCheckServer < Grpc::Health::V1::Health::Service
   def check(_req, _unused_call)

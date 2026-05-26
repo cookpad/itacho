@@ -1,4 +1,4 @@
-FROM public.ecr.aws/sorah/ruby:3.2-jammy
+FROM public.ecr.aws/sorah/ruby:4.0-noble
 
 WORKDIR /app
 COPY Gemfile Gemfile.lock ./

@@ -25,9 +25,9 @@ test:
 integration_test:
 	@echo "--> running integration_test"
 	@pushd test && \
-	  docker-compose down && \
-	  docker-compose up --build -d && \
+	  docker compose down && \
+	  docker compose up --build -d && \
 	  bundle install && \
 	  bundle exec ruby test.rb && \
-	  docker-compose down && \
+	  docker compose down && \
 	  popd

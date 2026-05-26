@@ -10,7 +10,7 @@ lib = File.expand_path('grpc/lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'grpc'
-require 'health_services_pb'
+require 'grpc/health/v1/health_services_pb'
 
 def raise_error(response = nil)
   p response if response
