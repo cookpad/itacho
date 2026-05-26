@@ -2,7 +2,8 @@
 
 source 'https://rubygems.org'
 
+gem 'rack-contrib'
+gem 'rackup'
 gem 'sinatra'
 gem 'sinatra-contrib'
-gem 'rack-contrib'
 gem 'webrick'

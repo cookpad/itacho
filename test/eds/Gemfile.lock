@@ -15,6 +15,8 @@ GEM
     rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
+    rackup (2.3.1)
+      rack (>= 3)
     sinatra (4.2.1)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
@@ -36,6 +38,7 @@ PLATFORMS
 
 DEPENDENCIES
   rack-contrib
+  rackup
   sinatra
   sinatra-contrib
   webrick
@@ -50,6 +53,7 @@ CHECKSUMS
   rack-contrib (2.5.0) sha256=51bd2ce82b8a3270f9173130c4cdaea72aab8b03dce8cd6af1c4344d84a32d02
   rack-protection (4.2.1) sha256=cf6e2842df8c55f5e4d1a4be015e603e19e9bc3a7178bae58949ccbb58558bac
   rack-session (2.1.2) sha256=595434f8c0c3473ae7d7ac56ecda6cc6dfd9d37c0b2b5255330aa1576967ffe8
+  rackup (2.3.1) sha256=6c79c26753778e90983761d677a48937ee3192b3ffef6bc963c0950f94688868
   sinatra (4.2.1) sha256=b7aeb9b11d046b552972ade834f1f9be98b185fa8444480688e3627625377080
   sinatra-contrib (4.2.1) sha256=10d091c944d268aa910c618ea40a3c3ebe0533e6e32990d84af92235a3d26b4a
   tilt (2.7.0) sha256=0d5b9ba69f6a36490c64b0eee9f6e9aad517e20dcc848800a06eb116f08c6ab3
